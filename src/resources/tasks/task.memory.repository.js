@@ -6,8 +6,15 @@ const getAll = () => tasksRepo;
 
 const getOne = (taskID) => tasksRepo.find((task) => task.id === taskID);
 
-const create = (data) => {
-  const { title, order, description, userId, boardId, columnId } = data;
+const getAllByBoardID = (boardID) =>
+  tasksRepo.filter((task) => task.boardId === boardID);
+
+const getAllByUserID = (userID) =>
+  tasksRepo.filter((task) => task.userId === userID);
+
+const create = ({ data, boardID }) => {
+  const boardId = boardID;
+  const { title, order, description, userId, columnId } = data;
   const createdTask = new Task({
     title,
     order,
@@ -44,4 +51,12 @@ const update = ({ taskID, data }) => {
   return tasksRepo.find((task) => task.id === id);
 };
 
-module.exports = { getAll, getOne, create, deleteOne, update };
+module.exports = {
+  getAll,
+  getOne,
+  getAllByBoardID,
+  getAllByUserID,
+  create,
+  deleteOne,
+  update,
+};

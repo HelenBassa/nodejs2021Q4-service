@@ -1,5 +1,6 @@
 const { validate } = require('uuid');
 const boardsRepo = require('./board.memory.repository');
+const tasksService = require('../tasks/task.service');
 
 const getAll = ({ reply }) => {
   const boards = boardsRepo.getAll();
@@ -40,6 +41,8 @@ const deleteOne = ({ request, reply }) => {
   const deletedBoard = boardsRepo.deleteOne(boardID);
 
   if (deletedBoard) {
+    const tasksOnBoard = tasksService.getAllByBoardID(boardID);
+    tasksService.deleteTasksOnBoard(tasksOnBoard);
     reply.code(204);
   } else {
     reply

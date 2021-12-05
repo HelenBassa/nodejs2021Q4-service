@@ -1,4 +1,5 @@
 const User = require('./user.model');
+const tasksService = require('../tasks/task.service');
 
 let usersRepo = [];
 
@@ -17,6 +18,8 @@ const create = (data) => {
 const deleteOne = (userID) => {
   const deletedUser = usersRepo.find((user) => user.id === userID);
   if (deletedUser) {
+    const userTasks = tasksService.getAllByUserID(userID);
+    tasksService.removeTasksFromUser(userTasks);
     usersRepo = usersRepo.filter((user) => user.id !== userID);
     return deletedUser;
   }
