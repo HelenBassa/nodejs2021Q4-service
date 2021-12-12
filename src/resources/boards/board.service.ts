@@ -1,14 +1,19 @@
-const { validate } = require('uuid');
-const boardsRepo = require('./board.memory.repository');
-const tasksService = require('../tasks/task.service');
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { validate } from 'uuid';
+import boardsRepo from './board.memory.repository';
+import tasksService from '../tasks/task.service';
+import { BoardBody, BoardParams } from './board.types';
 
-const getAll = ({ reply }) => {
+const getAll = (reply: FastifyReply) => {
   const boards = boardsRepo.getAll();
   reply.code(200).send(boards);
 };
 
-const getOne = ({ request, reply }) => {
-  const boardID = request.params.boardId;
+const getOne = (
+  request: FastifyRequest<{ Params: BoardParams }>,
+  reply: FastifyReply
+) => {
+  const boardID = request.params.id;
 
   if (!validate(boardID)) {
     reply.code(400).send({ message: `This ID: ${boardID} isn't UUID` });
@@ -25,14 +30,20 @@ const getOne = ({ request, reply }) => {
   }
 };
 
-const create = ({ request, reply }) => {
+const create = (
+  request: FastifyRequest<{ Body: BoardBody }>,
+  reply: FastifyReply
+) => {
   const data = request.body;
   const createdBoard = boardsRepo.create(data);
   reply.code(201).send(createdBoard);
 };
 
-const deleteOne = ({ request, reply }) => {
-  const boardID = request.params.boardId;
+const deleteOne = (
+  request: FastifyRequest<{ Params: BoardParams }>,
+  reply: FastifyReply
+) => {
+  const boardID = request.params.id;
 
   if (!validate(boardID)) {
     reply.code(400).send({ message: `This ID: ${boardID} isn't UUID` });
@@ -51,15 +62,18 @@ const deleteOne = ({ request, reply }) => {
   }
 };
 
-const update = ({ request, reply }) => {
-  const boardID = request.params.boardId;
+const update = (
+  request: FastifyRequest<{ Params: BoardParams; Body: BoardBody }>,
+  reply: FastifyReply
+) => {
+  const boardID = request.params.id;
   const data = request.body;
 
   if (!validate(boardID)) {
     reply.code(400).send({ message: `This ID: ${boardID} isn't UUID` });
   }
 
-  const updatedBoard = boardsRepo.update({ boardID, data });
+  const updatedBoard = boardsRepo.update(boardID, data);
 
   if (updatedBoard) {
     reply.code(200).send(updatedBoard);
@@ -70,4 +84,4 @@ const update = ({ request, reply }) => {
   }
 };
 
-module.exports = { getAll, getOne, create, deleteOne, update };
+export default { getAll, getOne, create, deleteOne, update };

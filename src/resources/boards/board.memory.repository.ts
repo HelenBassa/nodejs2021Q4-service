@@ -1,19 +1,21 @@
-const Board = require('./board.model');
+import Board from './board.model';
+import { BoardBody } from './board.types';
 
-let boardsRepo = [];
+let boardsRepo: Board[] = [];
 
 const getAll = () => boardsRepo;
 
-const getOne = (boardID) => boardsRepo.find((board) => board.id === boardID);
+const getOne = (boardID: string) =>
+  boardsRepo.find((board) => board.id === boardID);
 
-const create = (data) => {
+const create = (data: BoardBody) => {
   const { title, columns } = data;
-  const createdBoard = new Board({ title, columns });
+  const createdBoard = new Board(title, columns);
   boardsRepo = [...boardsRepo, createdBoard];
   return createdBoard;
 };
 
-const deleteOne = (boardID) => {
+const deleteOne = (boardID: string) => {
   const deletedBoard = boardsRepo.find((board) => board.id === boardID);
   if (deletedBoard) {
     boardsRepo = boardsRepo.filter((board) => board.id !== boardID);
@@ -22,7 +24,7 @@ const deleteOne = (boardID) => {
   return null;
 };
 
-const update = ({ boardID, data }) => {
+const update = (boardID: string, data: BoardBody) => {
   const { title, columns } = data;
   const id = boardID;
   const updatedBoard = boardsRepo.find((board) => board.id === boardID);
@@ -35,4 +37,4 @@ const update = ({ boardID, data }) => {
   return boardsRepo.find((board) => board.id === id);
 };
 
-module.exports = { getAll, getOne, create, deleteOne, update };
+export default { getAll, getOne, create, deleteOne, update };
