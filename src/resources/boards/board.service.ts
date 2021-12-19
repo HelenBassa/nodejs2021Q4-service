@@ -4,16 +4,16 @@ import boardsRepo from './board.memory.repository';
 import tasksService from '../tasks/task.service';
 import { BoardBody, BoardParams } from './board.types';
 
-const getAll = (reply: FastifyReply) => {
+const getAll = async (reply: FastifyReply) => {
   const boards = boardsRepo.getAll();
   reply.code(200).send(boards);
 };
 
-const getOne = (
+const getOne = async (
   request: FastifyRequest<{ Params: BoardParams }>,
   reply: FastifyReply
 ) => {
-  const boardID = request.params.id;
+  const boardID = request.params.boardId;
 
   if (!validate(boardID)) {
     reply.code(400).send({ message: `This ID: ${boardID} isn't UUID` });
@@ -30,7 +30,7 @@ const getOne = (
   }
 };
 
-const create = (
+const create = async (
   request: FastifyRequest<{ Body: BoardBody }>,
   reply: FastifyReply
 ) => {
@@ -39,11 +39,11 @@ const create = (
   reply.code(201).send(createdBoard);
 };
 
-const deleteOne = (
+const deleteOne = async (
   request: FastifyRequest<{ Params: BoardParams }>,
   reply: FastifyReply
 ) => {
-  const boardID = request.params.id;
+  const boardID = request.params.boardId;
 
   if (!validate(boardID)) {
     reply.code(400).send({ message: `This ID: ${boardID} isn't UUID` });
@@ -52,8 +52,8 @@ const deleteOne = (
   const deletedBoard = boardsRepo.deleteOne(boardID);
 
   if (deletedBoard) {
-    const tasksOnBoard = tasksService.getAllTasksByBoardID(boardID);
-    tasksService.deleteTasksOnBoard(tasksOnBoard);
+    // const tasksOnBoard = tasksService.getAllTasksByBoardID(boardID);
+    // tasksService.deleteTasksOnBoard(await tasksOnBoard);
     reply.code(204);
   } else {
     reply
@@ -62,11 +62,11 @@ const deleteOne = (
   }
 };
 
-const update = (
+const update = async (
   request: FastifyRequest<{ Params: BoardParams; Body: BoardBody }>,
   reply: FastifyReply
 ) => {
-  const boardID = request.params.id;
+  const boardID = request.params.boardId;
   const data = request.body;
 
   if (!validate(boardID)) {

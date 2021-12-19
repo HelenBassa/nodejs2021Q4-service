@@ -5,11 +5,11 @@ import tasksRepo from './task.memory.repository';
 import Task from './task.model';
 import { TaskBody, TaskParams } from './task.types';
 
-const getAllByBoardID = (
+const getAllByBoardID = async (
   request: FastifyRequest<{ Params: BoardParams }>,
   reply: FastifyReply
 ) => {
-  const boardID = request.params.id;
+  const boardID = request.params.boardId;
 
   if (!validate(boardID)) {
     reply.code(400).send({ message: `This ID: ${boardID} isn't UUID` });
@@ -19,17 +19,17 @@ const getAllByBoardID = (
   reply.code(200).send(tasks);
 };
 
-const getAllTasksByBoardID = (boardID: string) =>
+const getAllTasksByBoardID = async (boardID: string) =>
   tasksRepo.getAllByBoardID(boardID);
 
-const getAllTasksByUserID = (userID: string) =>
+const getAllTasksByUserID = async (userID: string) =>
   tasksRepo.getAllByUserID(userID);
 
-const getOne = (
+const getOne = async (
   request: FastifyRequest<{ Params: TaskParams }>,
   reply: FastifyReply
 ) => {
-  const taskID = request.params.id;
+  const taskID = request.params.taskId;
   const boardID = request.params.boardId;
 
   if (!validate(taskID)) {
@@ -49,12 +49,12 @@ const getOne = (
   }
 };
 
-const create = (
+const create = async (
   request: FastifyRequest<{ Params: BoardParams; Body: TaskBody }>,
   reply: FastifyReply
 ) => {
   const { title, order, description, userId, columnId } = request.body;
-  const boardId = request.params.id;
+  const boardId = request.params.boardId;
   if (userId) {
     const createdTask = tasksRepo.create(
       title,
@@ -71,11 +71,11 @@ const create = (
   }
 };
 
-const deleteOne = (
+const deleteOne = async (
   request: FastifyRequest<{ Params: TaskParams }>,
   reply: FastifyReply
 ) => {
-  const taskID = request.params.id;
+  const taskID = request.params.taskId;
 
   if (!validate(taskID)) {
     reply.code(400).send({ message: `This ID: ${taskID} isn't UUID` });
@@ -106,11 +106,11 @@ const removeTasksFromUser = (userTasks: Task[] | null) => {
   }
 };
 
-const update = (
+const update = async (
   request: FastifyRequest<{ Params: TaskParams; Body: TaskBody }>,
   reply: FastifyReply
 ) => {
-  const taskID = request.params.id;
+  const taskID = request.params.taskId;
   const data = request.body;
 
   if (!validate(taskID)) {

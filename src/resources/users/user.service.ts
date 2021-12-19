@@ -12,8 +12,7 @@ const getOne = async (
   request: FastifyRequest<{ Params: UserParams }>,
   reply: FastifyReply
 ) => {
-  const userID = request.params.id;
-  // console.log(userID);
+  const userID = request.params.userId;
 
   if (!validate(userID)) {
     reply.code(400).send({ message: `This ID: ${userID} isn't UUID` });
@@ -41,7 +40,7 @@ const deleteOne = async (
   request: FastifyRequest<{ Params: UserParams }>,
   reply: FastifyReply
 ) => {
-  const userID = request.params.id;
+  const userID = request.params.userId;
 
   if (!validate(userID)) {
     reply.code(400).send({ message: `This ID: ${userID} isn't UUID` });
@@ -49,7 +48,7 @@ const deleteOne = async (
 
   const deletedUser = usersRepo.deleteOne(userID);
 
-  if (await deletedUser) {
+  if (deletedUser) {
     reply.code(204);
   } else {
     reply.code(404).send({ message: `User with ID: ${userID} doesn't exist` });
@@ -60,7 +59,7 @@ const update = async (
   request: FastifyRequest<{ Params: UserParams; Body: UserBody }>,
   reply: FastifyReply
 ) => {
-  const userID = request.params.id;
+  const userID = request.params.userId;
   const data = request.body;
 
   if (!validate(userID)) {
