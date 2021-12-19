@@ -4,30 +4,30 @@ import { UserBody } from './user.types';
 
 let usersRepo: User[] = [];
 
-const getAll = async () => usersRepo.map((user) => User.toResponse(user));
+const getAll = () => usersRepo.map((user) => User.toResponse(user));
 
-const getOne = async (userID: string) =>
+const getOne = (userID: string) =>
   User.toResponse(usersRepo.find((user) => user.id === userID));
 
-const create = async (data: UserBody) => {
+const create = (data: UserBody) => {
   const { name, login, password } = data;
   const createdUser = new User(name, login, password);
   usersRepo = [...usersRepo, createdUser];
   return User.toResponse(createdUser);
 };
 
-const deleteOne = async (userID: string) => {
+const deleteOne = (userID: string) => {
   const deletedUser = usersRepo.find((user) => user.id === userID);
   if (deletedUser) {
-    const userTasks = tasksService.getAllTasksByUserID(userID);
-    tasksService.removeTasksFromUser(userTasks);
+    // const userTasks = await tasksService.getAllTasksByUserID(userID);
+    // tasksService.removeTasksFromUser(userTasks);
     usersRepo = usersRepo.filter((user) => user.id !== userID);
     return deletedUser;
   }
   return null;
 };
 
-const update = async (userID: string, data: UserBody) => {
+const update = (userID: string, data: UserBody) => {
   const { name, login, password } = data;
   const id = userID;
   const updatedUser = usersRepo.find((user) => user.id === userID);
