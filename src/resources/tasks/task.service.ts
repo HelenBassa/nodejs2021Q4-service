@@ -77,21 +77,17 @@ const create = async (
   reply: FastifyReply
 ) => {
   const { title, order, description, userId, columnId } = request.body;
-  const {boardId} = request.params;
-  if (userId) {
-    const createdTask = tasksRepo.create(
-      title,
-      order,
-      description,
-      userId,
-      columnId,
-      boardId
-    );
+  const { boardId } = request.params;
+  const createdTask = tasksRepo.create(
+    title,
+    order,
+    description,
+    userId,
+    boardId,
+    columnId
+  );
 
-    if (createdTask) {
-      reply.code(201).send(createdTask);
-    }
-  }
+  reply.code(201).send(createdTask);
 };
 
 /**
