@@ -39,6 +39,7 @@ const create = (data: UserBody) => {
 const deleteOne = (userID: string) => {
   const deletedUser = usersRepo.find((user) => user.id === userID);
   if (deletedUser) {
+    // TODO: Fix uncorrectly work +bug
     // const userTasks = await tasksService.getAllTasksByUserID(userID);
     // tasksService.removeTasksFromUser(userTasks);
     usersRepo = usersRepo.filter((user) => user.id !== userID);

@@ -72,6 +72,7 @@ const deleteOne = async (
   const deletedBoard = boardsRepo.deleteOne(boardID);
 
   if (deletedBoard) {
+    // TODO: Fix uncorrectly work +bug
     // const tasksOnBoard = tasksService.getAllTasksByBoardID(boardID);
     // tasksService.deleteTasksOnBoard(await tasksOnBoard);
     reply.code(204);
