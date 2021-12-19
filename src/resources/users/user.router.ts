@@ -56,8 +56,6 @@ const userRouter = async (fastify: FastifyInstance): Promise<void> => {
   }>('/users/:userId', async (request, reply) => {
     usersService.update(request, reply);
   });
-
-  // done();
 };
 
 export default userRouter;

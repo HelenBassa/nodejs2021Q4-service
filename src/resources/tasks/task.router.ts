@@ -60,8 +60,6 @@ const taskRouter = async (fastify: FastifyInstance): Promise<void> => {
   }>('/boards/:boardId/tasks/:taskId', async (request, reply) => {
     tasksService.update(request, reply);
   });
-
-  // done();
 };
 
 export default taskRouter;

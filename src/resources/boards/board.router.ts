@@ -56,8 +56,6 @@ const boardRouter = async (fastify: FastifyInstance): Promise<void> => {
   }>('/boards/:boardId', async (request, reply) => {
     boardsService.update(request, reply);
   });
-
-  // done();
 };
 
 export default boardRouter;
