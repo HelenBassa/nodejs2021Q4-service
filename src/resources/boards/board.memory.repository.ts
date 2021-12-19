@@ -20,8 +20,8 @@ const getOne = (boardID: string) =>
 
 /**
  * Creates board in in-memory DB.
- * @param data - object with title and array of columns (with field - title).
- * @returns object of new board with id, title and array of columns (with field - title).
+ * @param data - object with title and array of columns (with fields - title and order).
+ * @returns object of new board with id, title and array of columns (with fields - title and order).
  */
 const create = (data: BoardBody) => {
   const { title, columns } = data;
@@ -47,8 +47,8 @@ const deleteOne = (boardID: string) => {
 /**
  * Updates board by id in in-memory DB.
  * @param boardID - uuid of board.
- * @param data - object with title and array of columns (with field - title).
- * @returns object of new board with id, title and array of columns (with field - title).
+ * @param data - object with title and array of columns (with fields - title and order).
+ * @returns object of new board with id, title and array of columns (with fields - title and order).
  */
 const update = (boardID: string, data: BoardBody) => {
   const { title, columns } = data;
