@@ -5,7 +5,6 @@ let boardsRepo: Board[] = [];
 
 /**
  * Returns all boards from in-memory DB.
- *
  * @returns array of all boards.
  */
 const getAll = () => boardsRepo;

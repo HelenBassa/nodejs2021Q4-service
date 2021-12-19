@@ -5,7 +5,7 @@ export type TaskParams = {
 
 export type TaskBody = {
   title: string;
-  order: string;
+  order: number;
   description: string;
   userId: string | null;
   boardId: string;
