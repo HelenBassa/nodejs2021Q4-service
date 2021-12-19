@@ -5,6 +5,11 @@ import tasksRepo from './task.memory.repository';
 import Task from './task.model';
 import { TaskBody, TaskParams } from './task.types';
 
+/**
+ * Handles incoming request to get all tasks at the board.
+ * @param request - incoming request object
+ * @param reply - outcoming reply object
+ */
 const getAllByBoardID = async (
   request: FastifyRequest<{ Params: BoardParams }>,
   reply: FastifyReply
@@ -19,12 +24,25 @@ const getAllByBoardID = async (
   reply.code(200).send(tasks);
 };
 
+/**
+ * Handles getting all tasks at the board with boardID.
+ * @param boardID - id of the board.
+ */
 const getAllTasksByBoardID = async (boardID: string) =>
   tasksRepo.getAllByBoardID(boardID);
 
+/**
+ * Handles getting all tasks of the user with userID.
+ * @param userID - id of the user.
+ */
 const getAllTasksByUserID = async (userID: string) =>
   tasksRepo.getAllByUserID(userID);
 
+/**
+ * Handles incoming request to get task by id at the board.
+ * @param request - incoming request object
+ * @param reply - outcoming reply object
+ */
 const getOne = async (
   request: FastifyRequest<{ Params: TaskParams }>,
   reply: FastifyReply
@@ -49,6 +67,11 @@ const getOne = async (
   }
 };
 
+/**
+ * Handles incoming request to create new task at the board.
+ * @param request - incoming request object
+ * @param reply - outcoming reply object
+ */
 const create = async (
   request: FastifyRequest<{ Params: BoardParams; Body: TaskBody }>,
   reply: FastifyReply
@@ -71,6 +94,11 @@ const create = async (
   }
 };
 
+/**
+ * Handles incoming request to delete task at the board.
+ * @param request - incoming request object
+ * @param reply - outcoming reply object
+ */
 const deleteOne = async (
   request: FastifyRequest<{ Params: TaskParams }>,
   reply: FastifyReply
@@ -90,6 +118,10 @@ const deleteOne = async (
   }
 };
 
+/**
+ * Handles deleting all the task at the board.
+ * @param tasksOnBoard - all tasks at the board.
+ */
 const deleteTasksOnBoard = (tasksOnBoard: Task[] | null) => {
   if (tasksOnBoard) {
     tasksOnBoard.forEach((taskOnBoard) => {
@@ -98,6 +130,10 @@ const deleteTasksOnBoard = (tasksOnBoard: Task[] | null) => {
   }
 };
 
+/**
+ * Handles removing all the task of the user.
+ * @param userTasks - all tasks of the user.
+ */
 const removeTasksFromUser = (userTasks: Task[] | null) => {
   if (userTasks) {
     userTasks.forEach((userTask) => {
@@ -106,6 +142,11 @@ const removeTasksFromUser = (userTasks: Task[] | null) => {
   }
 };
 
+/**
+ * Handles incoming request to update task at the board.
+ * @param request - incoming request object
+ * @param reply - outcoming reply object
+ */
 const update = async (
   request: FastifyRequest<{ Params: TaskParams; Body: TaskBody }>,
   reply: FastifyReply
