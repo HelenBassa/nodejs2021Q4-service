@@ -1,24 +1,25 @@
-const User = require('./user.model');
-const tasksService = require('../tasks/task.service');
+import User from './user.model';
+import tasksService from '../tasks/task.service';
+import { UserBody } from './user.types';
 
-let usersRepo = [];
+let usersRepo: User[] = [];
 
-const getAll = () => usersRepo.map((user) => User.toResponse(user));
+const getAll = async () => usersRepo.map((user) => User.toResponse(user));
 
-const getOne = (userID) =>
+const getOne = async (userID: string) =>
   User.toResponse(usersRepo.find((user) => user.id === userID));
 
-const create = (data) => {
+const create = async (data: UserBody) => {
   const { name, login, password } = data;
-  const createdUser = new User({ name, login, password });
+  const createdUser = new User(name, login, password);
   usersRepo = [...usersRepo, createdUser];
   return User.toResponse(createdUser);
 };
 
-const deleteOne = (userID) => {
+const deleteOne = async (userID: string) => {
   const deletedUser = usersRepo.find((user) => user.id === userID);
   if (deletedUser) {
-    const userTasks = tasksService.getAllByUserID(userID);
+    const userTasks = tasksService.getAllTasksByUserID(userID);
     tasksService.removeTasksFromUser(userTasks);
     usersRepo = usersRepo.filter((user) => user.id !== userID);
     return deletedUser;
@@ -26,7 +27,7 @@ const deleteOne = (userID) => {
   return null;
 };
 
-const update = ({ userID, data }) => {
+const update = async (userID: string, data: UserBody) => {
   const { name, login, password } = data;
   const id = userID;
   const updatedUser = usersRepo.find((user) => user.id === userID);
@@ -39,4 +40,4 @@ const update = ({ userID, data }) => {
   return User.toResponse(usersRepo.find((user) => user.id === id));
 };
 
-module.exports = { getAll, getOne, create, deleteOne, update };
+export default { getAll, getOne, create, deleteOne, update };

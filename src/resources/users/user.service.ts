@@ -1,13 +1,19 @@
-const { validate } = require('uuid');
-const usersRepo = require('./user.memory.repository');
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { validate } from 'uuid';
+import usersRepo from './user.memory.repository';
+import { UserBody, UserParams } from './user.types';
 
-const getAll = ({ reply }) => {
+const getAll = async (reply: FastifyReply) => {
   const users = usersRepo.getAll();
   reply.code(200).send(users);
 };
 
-const getOne = ({ request, reply }) => {
-  const userID = request.params.userId;
+const getOne = async (
+  request: FastifyRequest<{ Params: UserParams }>,
+  reply: FastifyReply
+) => {
+  const userID = request.params.id;
+  // console.log(userID);
 
   if (!validate(userID)) {
     reply.code(400).send({ message: `This ID: ${userID} isn't UUID` });
@@ -22,14 +28,20 @@ const getOne = ({ request, reply }) => {
   }
 };
 
-const create = ({ request, reply }) => {
+const create = async (
+  request: FastifyRequest<{ Body: UserBody }>,
+  reply: FastifyReply
+) => {
   const data = request.body;
   const createdUser = usersRepo.create(data);
   reply.code(201).send(createdUser);
 };
 
-const deleteOne = ({ request, reply }) => {
-  const userID = request.params.userId;
+const deleteOne = async (
+  request: FastifyRequest<{ Params: UserParams }>,
+  reply: FastifyReply
+) => {
+  const userID = request.params.id;
 
   if (!validate(userID)) {
     reply.code(400).send({ message: `This ID: ${userID} isn't UUID` });
@@ -37,22 +49,25 @@ const deleteOne = ({ request, reply }) => {
 
   const deletedUser = usersRepo.deleteOne(userID);
 
-  if (deletedUser) {
+  if (await deletedUser) {
     reply.code(204);
   } else {
     reply.code(404).send({ message: `User with ID: ${userID} doesn't exist` });
   }
 };
 
-const update = ({ request, reply }) => {
-  const userID = request.params.userId;
+const update = async (
+  request: FastifyRequest<{ Params: UserParams; Body: UserBody }>,
+  reply: FastifyReply
+) => {
+  const userID = request.params.id;
   const data = request.body;
 
   if (!validate(userID)) {
     reply.code(400).send({ message: `This ID: ${userID} isn't UUID` });
   }
 
-  const updatedUser = usersRepo.update({ userID, data });
+  const updatedUser = usersRepo.update(userID, data);
 
   if (updatedUser) {
     reply.code(200).send(updatedUser);
@@ -61,4 +76,4 @@ const update = ({ request, reply }) => {
   }
 };
 
-module.exports = { getAll, getOne, create, deleteOne, update };
+export default { getAll, getOne, create, deleteOne, update };
