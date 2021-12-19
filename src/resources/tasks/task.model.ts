@@ -11,9 +11,9 @@ class Task {
 
   userId: string | null;
 
-  boardId: string;
+  boardId: string | null;
 
-  columnId: string;
+  columnId: string | null;
 
   /**
    * Creates an instance of task.
@@ -28,9 +28,9 @@ class Task {
     title: string,
     order: number,
     description: string,
-    userId: string,
-    boardId: string,
-    columnId: string
+    userId: string | null,
+    boardId: string | null,
+    columnId: string | null
   ) {
     this.id = v4();
     this.title = title;

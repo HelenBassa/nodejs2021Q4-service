@@ -48,9 +48,9 @@ const create = (
   title: string,
   order: number,
   description: string,
-  userId: string,
-  boardId: string,
-  columnId: string
+  userId: string | null,
+  boardId: string | null,
+  columnId: string | null
 ) => {
   const createdTask = new Task(
     title,
