@@ -4,11 +4,21 @@ import boardsRepo from './board.memory.repository';
 import tasksService from '../tasks/task.service';
 import { BoardBody, BoardParams } from './board.types';
 
+/**
+ * Handles incoming request to get all boards
+ * @param _ - incoming request object, not used
+ * @param reply - outcoming reply object
+ */
 const getAll = async (reply: FastifyReply) => {
   const boards = boardsRepo.getAll();
   reply.code(200).send(boards);
 };
 
+/**
+ * Handles incoming request to get board by id
+ * @param request - incoming request object
+ * @param reply - outcoming reply object
+ */
 const getOne = async (
   request: FastifyRequest<{ Params: BoardParams }>,
   reply: FastifyReply
@@ -30,6 +40,11 @@ const getOne = async (
   }
 };
 
+/**
+ * Handles incoming request to create new board
+ * @param request - incoming request object
+ * @param reply - outcoming reply object
+ */
 const create = async (
   request: FastifyRequest<{ Body: BoardBody }>,
   reply: FastifyReply
@@ -39,6 +54,11 @@ const create = async (
   reply.code(201).send(createdBoard);
 };
 
+/**
+ * Handles incoming request to delete board
+ * @param request - incoming request object
+ * @param reply - outcoming reply object
+ */
 const deleteOne = async (
   request: FastifyRequest<{ Params: BoardParams }>,
   reply: FastifyReply
@@ -62,6 +82,11 @@ const deleteOne = async (
   }
 };
 
+/**
+ * Handles incoming request to update board
+ * @param request - incoming request object
+ * @param reply - outcoming reply object
+ */
 const update = async (
   request: FastifyRequest<{ Params: BoardParams; Body: BoardBody }>,
   reply: FastifyReply

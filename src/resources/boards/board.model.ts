@@ -6,6 +6,11 @@ class Board {
   title: string;
   columns: Column[];
 
+  /**
+   * Creates an instance of board.
+   * @param title - title of board.
+   * @param columns - columns of board.
+   */
   constructor(title: string, columns: Column[]) {
     this.id = v4();
     this.title = title;
