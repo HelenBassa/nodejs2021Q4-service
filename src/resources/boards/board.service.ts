@@ -52,7 +52,7 @@ const deleteOne = (
   const deletedBoard = boardsRepo.deleteOne(boardID);
 
   if (deletedBoard) {
-    const tasksOnBoard = tasksService.getAllByBoardID(boardID);
+    const tasksOnBoard = tasksService.getAllTasksByBoardID(boardID);
     tasksService.deleteTasksOnBoard(tasksOnBoard);
     reply.code(204);
   } else {
