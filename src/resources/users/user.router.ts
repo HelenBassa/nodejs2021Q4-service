@@ -3,10 +3,20 @@ import usersService from './user.service';
 import { UserBody, UserParams } from './user.types';
 
 const userRouter = async (fastify: FastifyInstance): Promise<void> => {
+  /**
+   * Uses get method to get all users
+   * @param _ - incoming request object, not used
+   * @param reply - outcoming reply object
+   */
   fastify.get('/users', async (_, reply) => {
     usersService.getAll(reply);
   });
 
+  /**
+   * Uses get method to get user by id
+   * @param request - incoming request object
+   * @param reply - outcoming reply object
+   */
   fastify.get<{ Params: UserParams }>(
     '/users/:userId',
     async (request, reply) => {
@@ -14,10 +24,20 @@ const userRouter = async (fastify: FastifyInstance): Promise<void> => {
     }
   );
 
+  /**
+   * Uses post method to create new user
+   * @param request - incoming request object
+   * @param reply - outcoming reply object
+   */
   fastify.post<{ Body: UserBody }>('/users', async (request, reply) => {
     usersService.create(request, reply);
   });
 
+  /**
+   * Uses delete method to delete user
+   * @param request - incoming request object
+   * @param reply - outcoming reply object
+   */
   fastify.delete<{ Params: UserParams }>(
     '/users/:userId',
     async (request, reply) => {
@@ -25,6 +45,11 @@ const userRouter = async (fastify: FastifyInstance): Promise<void> => {
     }
   );
 
+  /**
+   * Uses put method to update user
+   * @param request - incoming request object
+   * @param reply - outcoming reply object
+   */
   fastify.put<{
     Params: UserParams;
     Body: UserBody;

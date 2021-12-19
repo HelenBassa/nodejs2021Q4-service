@@ -3,11 +3,21 @@ import { validate } from 'uuid';
 import usersRepo from './user.memory.repository';
 import { UserBody, UserParams } from './user.types';
 
+/**
+ * Handles incoming request to get all users
+ * @param _ - incoming request object, not used
+ * @param reply - outcoming reply object
+ */
 const getAll = async (reply: FastifyReply) => {
   const users = usersRepo.getAll();
   reply.code(200).send(users);
 };
 
+/**
+ * Handles incoming request to get user by id
+ * @param request - incoming request object
+ * @param reply - outcoming reply object
+ */
 const getOne = async (
   request: FastifyRequest<{ Params: UserParams }>,
   reply: FastifyReply
@@ -27,6 +37,11 @@ const getOne = async (
   }
 };
 
+/**
+ * Handles incoming request to create new user
+ * @param request - incoming request object
+ * @param reply - outcoming reply object
+ */
 const create = async (
   request: FastifyRequest<{ Body: UserBody }>,
   reply: FastifyReply
@@ -36,6 +51,11 @@ const create = async (
   reply.code(201).send(createdUser);
 };
 
+/**
+ * Handles incoming request to delete user
+ * @param request - incoming request object
+ * @param reply - outcoming reply object
+ */
 const deleteOne = async (
   request: FastifyRequest<{ Params: UserParams }>,
   reply: FastifyReply
@@ -55,6 +75,11 @@ const deleteOne = async (
   }
 };
 
+/**
+ * Handles incoming request to update user
+ * @param request - incoming request object
+ * @param reply - outcoming reply object
+ */
 const update = async (
   request: FastifyRequest<{ Params: UserParams; Body: UserBody }>,
   reply: FastifyReply
