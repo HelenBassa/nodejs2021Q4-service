@@ -3,7 +3,9 @@ import Column from '../columns/column.model';
 
 class Board {
   id: string;
+
   title: string;
+
   columns: Column[];
 
   /**

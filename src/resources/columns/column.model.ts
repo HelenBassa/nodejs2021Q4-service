@@ -2,7 +2,9 @@ import { v4 } from 'uuid';
 
 class Column {
   id: string;
+
   title: string;
+
   order: number;
 
   /**

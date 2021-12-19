@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { validate } from 'uuid';
 import boardsRepo from './board.memory.repository';
-import tasksService from '../tasks/task.service';
+// import tasksService from '../tasks/task.service';
 import { BoardBody, BoardParams } from './board.types';
 
 /**

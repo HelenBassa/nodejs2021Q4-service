@@ -77,7 +77,7 @@ const create = async (
   reply: FastifyReply
 ) => {
   const { title, order, description, userId, columnId } = request.body;
-  const boardId = request.params.boardId;
+  const {boardId} = request.params;
   if (userId) {
     const createdTask = tasksRepo.create(
       title,
