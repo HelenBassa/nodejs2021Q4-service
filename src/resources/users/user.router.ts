@@ -2,7 +2,7 @@ import { FastifyInstance } from 'fastify';
 import usersService from './user.service';
 import { UserBody, UserParams } from './user.types';
 
-const userRouter = async (fastify: FastifyInstance) => {
+const userRouter = async (fastify: FastifyInstance): Promise<void> => {
   fastify.get('/users', async (_, reply) => {
     usersService.getAll(reply);
   });

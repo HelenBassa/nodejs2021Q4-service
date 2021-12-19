@@ -2,7 +2,7 @@ import { FastifyInstance } from 'fastify';
 import boardsService from './board.service';
 import { BoardBody, BoardParams } from './board.types';
 
-const boardRouter = (fastify: FastifyInstance) => {
+const boardRouter = async (fastify: FastifyInstance): Promise<void> => {
   fastify.get('/boards', async (_, reply) => {
     boardsService.getAll(reply);
   });
