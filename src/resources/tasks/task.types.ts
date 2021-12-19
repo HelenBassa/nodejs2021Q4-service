@@ -1,5 +1,5 @@
 export type TaskParams = {
-  id: string;
+  taskId: string;
   boardId: string;
 };
 

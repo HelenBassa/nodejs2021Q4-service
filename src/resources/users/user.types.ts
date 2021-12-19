@@ -1,5 +1,5 @@
 export type UserParams = {
-  id: string;
+  userId: string;
 };
 
 export type UserBody = {

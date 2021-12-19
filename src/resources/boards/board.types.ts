@@ -1,7 +1,7 @@
 import Column from '../columns/column.model';
 
 export type BoardParams = {
-  id: string;
+  boardId: string;
 };
 
 export type BoardBody = {
