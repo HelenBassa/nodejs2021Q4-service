@@ -4,6 +4,7 @@ services:
   app:
     container_name: docker-basics-app
     build: .
+    image: app
     ports:
       - "${PORT}:${PORT}"
     networks:
@@ -11,14 +12,17 @@ services:
     depends_on:
       - db
     restart: on-failure
+    links: 
+      - db
     volumes:
-      - logs:/usr/app/logs
-      - ./src:/usr/app/src
+      - logs:/app/logs
+      - ./src:/app/src
     environment:
       - PORT=${PORT}
   db:
     container_name: docker-basics-db
     build: ./postgres_db/
+    image: db
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     networks:
