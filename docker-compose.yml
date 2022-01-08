@@ -4,7 +4,7 @@ services:
   app:
     container_name: docker-basics-app
     build: .
-    image: app
+    #image: helenbassa/docker-basics-app
     ports:
       - "${PORT}:${PORT}"
     networks:
@@ -22,7 +22,7 @@ services:
   db:
     container_name: docker-basics-db
     build: ./postgres_db/
-    image: db
+    #image: helenbassa/docker-basics-db
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     networks:
