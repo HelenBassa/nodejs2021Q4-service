@@ -93,5 +93,7 @@ export const onResponseLog = (
 
 export const fatalLog = (app: FastifyInstance) => (error: unknown) => {
   app.log.fatal(error);
-  process.exit(1);
+  setTimeout(() => {
+    process.exit(1);
+  }, 1000);
 };

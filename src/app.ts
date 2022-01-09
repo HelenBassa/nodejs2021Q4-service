@@ -35,4 +35,13 @@ app.register(taskRouter);
 process.on('uncaughtException', logger.fatalLog(app));
 process.on('unhandledRejection', logger.fatalLog(app));
 
+/*
+!!! For check restarting docker container ->
+!!! -> uncomment the one of following lines and start the server:
+*/
+
+// throw Error('Oops! Uncaught exception!!!');
+
+// Promise.reject(Error('Oops! Unhandled rejection!!!'));
+
 export default app;
