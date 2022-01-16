@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import app from './app';
 import { PORT } from './common/config';
 import * as logger from './common/logger';
