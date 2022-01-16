@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+  app:
+    container_name: docker-basics-app
+    build: .
+    #image: helenbassa/docker-basics-app
+    ports:
+      - "${PORT}:${PORT}"
+    networks:
+      - user-net
+    depends_on:
+      - db
+    restart: on-failure
+    links: 
+      - db
+    volumes:
+      - logs:/app/logs
+      - ./src:/app/src
+    environment:
+      - PORT=${PORT}
+  db:
+    container_name: docker-basics-db
+    build: ./postgres_db/
+    #image: helenbassa/docker-basics-db
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    networks:
+      - user-net
+    restart: always
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - PGDATA=${PGDATA}
+
+networks:
+  user-net:
+    driver: bridge
+
+volumes:
+  logs:
+  postgres_db:

@@ -1,5 +1,42 @@
 # RS School REST service
 
+## How to install, build and start the REST service in **docker containers**
+
+## Prerequisites
+
+- Install [Docker](https://www.docker.com/).
+- Install (if necessary) [Docker compose](https://docs.docker.com/compose/install/).
+
+## Downloading
+
+```bash
+git clone https://github.com/HelenBassa/nodejs2021Q4-service.git
+```
+
+## Checkout branch
+
+- Checkout to `Task-7.-Docker-basics` branch
+
+## Build and start containers for the REST service:
+
+```bash
+docker-compose up -d
+```
+
+## Running the REST service in docker:
+
+```bash
+docker container exec docker-basics-app npm run dev
+```
+
+## Testing the REST service in docker:
+
+```bash
+docker container exec docker-basics-app npm run test
+```
+
+## How to install and start the REST service on **local machine**
+
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
@@ -7,19 +44,19 @@
 
 ## Downloading
 
-```
-git clone {repository URL}
+```bash
+git clone https://github.com/HelenBassa/nodejs2021Q4-service.git
 ```
 
 ## Installing NPM modules
 
-```
+```bash
 npm install
 ```
 
 ## Running application
 
-```
+```bash
 npm start
 ```
 
@@ -33,25 +70,25 @@ After application running open new terminal and enter:
 
 To run all tests without authorization
 
-```
+```bash
 npm test
 ```
 
 To run only one of all test suites (users, boards or tasks)
 
-```
+```bash
 npm test <suite name>
 ```
 
 To run all test with authorization
 
-```
+```bash
 npm run test:auth
 ```
 
 To run only specific test suite with authorization (users, boards or tasks)
 
-```
+```bash
 npm run test:auth <suite name>
 ```
 
@@ -61,7 +98,7 @@ If you're using VSCode, you can get a better developer experience from integrati
 
 ### Auto-fix and format
 
-```
+```bash
 npm run lint
 ```
 
