@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
-import boardsService from './board.service';
+
 import { BoardBody, BoardParams } from './board.types';
+import boardsService from './board.service';
 
 const boardRouter = async (fastify: FastifyInstance): Promise<void> => {
   /**
@@ -8,7 +9,7 @@ const boardRouter = async (fastify: FastifyInstance): Promise<void> => {
    * @param _ - incoming request object, not used
    * @param reply - outcoming reply object
    */
-  fastify.get('/boards', async (_, reply) => {
+  fastify.get('/boards', (_, reply) => {
     boardsService.getAll(reply);
   });
 
@@ -17,19 +18,16 @@ const boardRouter = async (fastify: FastifyInstance): Promise<void> => {
    * @param request - incoming request object
    * @param reply - outcoming reply object
    */
-  fastify.get<{ Params: BoardParams }>(
-    '/boards/:boardId',
-    async (request, reply) => {
-      boardsService.getOne(request, reply);
-    }
-  );
+  fastify.get<{ Params: BoardParams }>('/boards/:boardId', (request, reply) => {
+    boardsService.getOne(request, reply);
+  });
 
   /**
    * Uses post method to create new board
    * @param request - incoming request object
    * @param reply - outcoming reply object
    */
-  fastify.post<{ Body: BoardBody }>('/boards', async (request, reply) => {
+  fastify.post<{ Body: BoardBody }>('/boards', (request, reply) => {
     boardsService.create(request, reply);
   });
 
@@ -40,7 +38,7 @@ const boardRouter = async (fastify: FastifyInstance): Promise<void> => {
    */
   fastify.delete<{ Params: BoardParams }>(
     '/boards/:boardId',
-    async (request, reply) => {
+    (request, reply) => {
       boardsService.deleteOne(request, reply);
     }
   );
@@ -53,7 +51,7 @@ const boardRouter = async (fastify: FastifyInstance): Promise<void> => {
   fastify.put<{
     Params: BoardParams;
     Body: BoardBody;
-  }>('/boards/:boardId', async (request, reply) => {
+  }>('/boards/:boardId', (request, reply) => {
     boardsService.update(request, reply);
   });
 };

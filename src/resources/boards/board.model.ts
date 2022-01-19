@@ -1,4 +1,4 @@
-import { v4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import Column from '../columns/column.model';
 
 class Board {
@@ -13,8 +13,8 @@ class Board {
    * @param title - title of board.
    * @param columns - columns of board.
    */
-  constructor(title: string, columns: Column[]) {
-    this.id = v4();
+  constructor(id = uuidv4(), title: string, columns: Column[]) {
+    this.id = id;
     this.title = title;
     this.columns = columns;
   }

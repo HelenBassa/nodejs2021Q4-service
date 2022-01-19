@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { validate } from 'uuid';
-import boardsRepo from './board.memory.repository';
-// import tasksService from '../tasks/task.service';
+
 import { BoardBody, BoardParams } from './board.types';
+import boardsRepo from './board.memory.repository';
 
 /**
  * Handles incoming request to get all boards
@@ -10,7 +10,7 @@ import { BoardBody, BoardParams } from './board.types';
  * @param reply - outcoming reply object
  */
 const getAll = async (reply: FastifyReply) => {
-  const boards = boardsRepo.getAll();
+  const boards = await boardsRepo.getAll();
   reply.code(200).send(boards);
 };
 
@@ -23,20 +23,20 @@ const getOne = async (
   request: FastifyRequest<{ Params: BoardParams }>,
   reply: FastifyReply
 ) => {
-  const boardID = request.params.boardId;
+  const { boardId } = request.params;
 
-  if (!validate(boardID)) {
-    reply.code(400).send({ message: `This ID: ${boardID} isn't UUID` });
+  if (!validate(boardId)) {
+    reply.code(400).send({ message: `This ID: ${boardId} isn't UUID` });
   }
 
-  const board = boardsRepo.getOne(boardID);
+  const board = await boardsRepo.getOne(boardId);
 
   if (board) {
     reply.code(200).send(board);
   } else {
     reply
       .code(404)
-      .send({ message: `Board with ID: ${boardID} doesn't exist` });
+      .send({ message: `Board with ID: ${boardId} doesn't exist` });
   }
 };
 
@@ -50,7 +50,7 @@ const create = async (
   reply: FastifyReply
 ) => {
   const data = request.body;
-  const createdBoard = boardsRepo.create(data);
+  const createdBoard = await boardsRepo.create(data);
   reply.code(201).send(createdBoard);
 };
 
@@ -63,23 +63,20 @@ const deleteOne = async (
   request: FastifyRequest<{ Params: BoardParams }>,
   reply: FastifyReply
 ) => {
-  const boardID = request.params.boardId;
+  const { boardId } = request.params;
 
-  if (!validate(boardID)) {
-    reply.code(400).send({ message: `This ID: ${boardID} isn't UUID` });
+  if (!validate(boardId)) {
+    reply.code(400).send({ message: `This ID: ${boardId} isn't UUID` });
   }
 
-  const deletedBoard = boardsRepo.deleteOne(boardID);
+  const deletedBoard = await boardsRepo.deleteOne(boardId);
 
   if (deletedBoard) {
-    // TODO: Fix uncorrectly work +bug
-    // const tasksOnBoard = tasksService.getAllTasksByBoardID(boardID);
-    // tasksService.deleteTasksOnBoard(await tasksOnBoard);
     reply.code(204);
   } else {
     reply
       .code(404)
-      .send({ message: `Board with ID: ${boardID} doesn't exist` });
+      .send({ message: `Board with ID: ${boardId} doesn't exist` });
   }
 };
 
@@ -92,21 +89,21 @@ const update = async (
   request: FastifyRequest<{ Params: BoardParams; Body: BoardBody }>,
   reply: FastifyReply
 ) => {
-  const boardID = request.params.boardId;
+  const { boardId } = request.params;
   const data = request.body;
 
-  if (!validate(boardID)) {
-    reply.code(400).send({ message: `This ID: ${boardID} isn't UUID` });
+  if (!validate(boardId)) {
+    reply.code(400).send({ message: `This ID: ${boardId} isn't UUID` });
   }
 
-  const updatedBoard = boardsRepo.update(boardID, data);
+  const updatedBoard = await boardsRepo.update(boardId, data);
 
   if (updatedBoard) {
     reply.code(200).send(updatedBoard);
   } else {
     reply
       .code(404)
-      .send({ message: `Board with ID: ${boardID} doesn't exist` });
+      .send({ message: `Board with ID: ${boardId} doesn't exist` });
   }
 };
 
