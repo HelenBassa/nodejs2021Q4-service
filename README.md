@@ -15,12 +15,12 @@ git clone https://github.com/HelenBassa/nodejs2021Q4-service.git
 
 ## Checkout branch
 
-- Checkout to `Task-7.-Docker-basics` branch
+- Checkout to `Task-8.-PostgreSQL-&-Typeorm` branch
 
 ## Build and start containers for the REST service:
 
 ```bash
-docker-compose up -d
+docker-compose up
 ```
 
 ## Running the REST service in docker:
