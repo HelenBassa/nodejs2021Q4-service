@@ -25,13 +25,13 @@ class Task {
    * @param columnId - uuid of the column.
    */
   constructor(
-    id = uuidv4(),
     title: string,
     order: number,
     description: string,
     userId: string | null,
     boardId: string,
-    columnId: string | null
+    columnId: string | null,
+    id = uuidv4()
   ) {
     this.id = id;
     this.title = title;

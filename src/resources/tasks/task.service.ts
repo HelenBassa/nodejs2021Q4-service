@@ -104,15 +104,15 @@ const deleteOne = async (
  * Handles deleting all the task at the board.
  * @param tasksOnBoard - all tasks at the board.
  */
-const deleteTasksOnBoard = async (boardId: string): Promise<void> =>
-  await tasksRepo.deleteTasksByboardId(boardId);
+const deleteTasksOnBoard = (boardId: string): Promise<void> =>
+  tasksRepo.deleteTasksByboardId(boardId);
 
 /**
  * Handles removing all the task of the user.
  * @param userTasks - all tasks of the user.
  */
-const removeTasksFromUser = async (userId: string): Promise<void> =>
-  await tasksRepo.unassignUser(userId);
+const removeTasksFromUser = (userId: string): Promise<void> =>
+  tasksRepo.unassignUser(userId);
 
 /**
  * Handles incoming request to update task at the board.

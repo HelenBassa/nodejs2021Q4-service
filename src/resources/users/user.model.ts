@@ -15,7 +15,7 @@ class User {
    * @param login - login of user
    * @param password - password of user
    */
-  constructor(id = uuidv4(), name: string, login: string, password: string) {
+  constructor(name: string, login: string, password: string, id = uuidv4()) {
     this.id = id;
     this.name = name;
     this.login = login;

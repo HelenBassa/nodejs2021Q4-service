@@ -14,6 +14,5 @@ createConnection(options)
     });
   })
   .catch((error: unknown) => {
-    console.log('TypeORM connection error: ', error);
     logger.fatalLog(app)(error);
   });

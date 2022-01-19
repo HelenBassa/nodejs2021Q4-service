@@ -13,7 +13,7 @@ class Board {
    * @param title - title of board.
    * @param columns - columns of board.
    */
-  constructor(id = uuidv4(), title: string, columns: Column[]) {
+  constructor(title: string, columns: Column[], id = uuidv4()) {
     this.id = id;
     this.title = title;
     this.columns = columns;
