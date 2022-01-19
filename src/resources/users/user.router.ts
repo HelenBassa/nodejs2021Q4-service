@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
-import usersService from './user.service';
+
 import { UserBody, UserParams } from './user.types';
+import usersService from './user.service';
 
 const userRouter = async (fastify: FastifyInstance): Promise<void> => {
   /**
@@ -8,7 +9,7 @@ const userRouter = async (fastify: FastifyInstance): Promise<void> => {
    * @param _ - incoming request object, not used
    * @param reply - outcoming reply object
    */
-  fastify.get('/users', async (_, reply) => {
+  fastify.get('/users', (_, reply) => {
     usersService.getAll(reply);
   });
 
@@ -17,19 +18,16 @@ const userRouter = async (fastify: FastifyInstance): Promise<void> => {
    * @param request - incoming request object
    * @param reply - outcoming reply object
    */
-  fastify.get<{ Params: UserParams }>(
-    '/users/:userId',
-    async (request, reply) => {
-      usersService.getOne(request, reply);
-    }
-  );
+  fastify.get<{ Params: UserParams }>('/users/:userId', (request, reply) => {
+    usersService.getOne(request, reply);
+  });
 
   /**
    * Uses post method to create new user
    * @param request - incoming request object
    * @param reply - outcoming reply object
    */
-  fastify.post<{ Body: UserBody }>('/users', async (request, reply) => {
+  fastify.post<{ Body: UserBody }>('/users', (request, reply) => {
     usersService.create(request, reply);
   });
 
@@ -38,12 +36,9 @@ const userRouter = async (fastify: FastifyInstance): Promise<void> => {
    * @param request - incoming request object
    * @param reply - outcoming reply object
    */
-  fastify.delete<{ Params: UserParams }>(
-    '/users/:userId',
-    async (request, reply) => {
-      usersService.deleteOne(request, reply);
-    }
-  );
+  fastify.delete<{ Params: UserParams }>('/users/:userId', (request, reply) => {
+    usersService.deleteOne(request, reply);
+  });
 
   /**
    * Uses put method to update user
@@ -53,7 +48,7 @@ const userRouter = async (fastify: FastifyInstance): Promise<void> => {
   fastify.put<{
     Params: UserParams;
     Body: UserBody;
-  }>('/users/:userId', async (request, reply) => {
+  }>('/users/:userId', (request, reply) => {
     usersService.update(request, reply);
   });
 };

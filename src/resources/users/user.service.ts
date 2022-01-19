@@ -1,7 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { validate } from 'uuid';
-import usersRepo from './user.memory.repository';
+
 import { UserBody, UserParams } from './user.types';
+import usersRepo from './user.memory.repository';
 
 /**
  * Handles incoming request to get all users
@@ -9,7 +10,7 @@ import { UserBody, UserParams } from './user.types';
  * @param reply - outcoming reply object
  */
 const getAll = async (reply: FastifyReply) => {
-  const users = usersRepo.getAll();
+  const users = await usersRepo.getAll();
   reply.code(200).send(users);
 };
 
@@ -22,18 +23,18 @@ const getOne = async (
   request: FastifyRequest<{ Params: UserParams }>,
   reply: FastifyReply
 ) => {
-  const userID = request.params.userId;
+  const { userId } = request.params;
 
-  if (!validate(userID)) {
-    reply.code(400).send({ message: `This ID: ${userID} isn't UUID` });
+  if (!validate(userId)) {
+    reply.code(400).send({ message: `This ID: ${userId} isn't UUID` });
   }
 
-  const user = usersRepo.getOne(userID);
+  const user = await usersRepo.getOne(userId);
 
   if (user) {
     reply.code(200).send(user);
   } else {
-    reply.code(404).send({ message: `User with ID: ${userID} doesn't exist` });
+    reply.code(404).send({ message: `User with ID: ${userId} doesn't exist` });
   }
 };
 
@@ -47,7 +48,7 @@ const create = async (
   reply: FastifyReply
 ) => {
   const data = request.body;
-  const createdUser = usersRepo.create(data);
+  const createdUser = await usersRepo.create(data);
   reply.code(201).send(createdUser);
 };
 
@@ -60,18 +61,18 @@ const deleteOne = async (
   request: FastifyRequest<{ Params: UserParams }>,
   reply: FastifyReply
 ) => {
-  const userID = request.params.userId;
+  const { userId } = request.params;
 
-  if (!validate(userID)) {
-    reply.code(400).send({ message: `This ID: ${userID} isn't UUID` });
+  if (!validate(userId)) {
+    reply.code(400).send({ message: `This ID: ${userId} isn't UUID` });
   }
 
-  const deletedUser = usersRepo.deleteOne(userID);
+  const deletedUser = await usersRepo.deleteOne(userId);
 
   if (deletedUser) {
     reply.code(204);
   } else {
-    reply.code(404).send({ message: `User with ID: ${userID} doesn't exist` });
+    reply.code(404).send({ message: `User with ID: ${userId} doesn't exist` });
   }
 };
 
@@ -84,19 +85,19 @@ const update = async (
   request: FastifyRequest<{ Params: UserParams; Body: UserBody }>,
   reply: FastifyReply
 ) => {
-  const userID = request.params.userId;
+  const { userId } = request.params;
   const data = request.body;
 
-  if (!validate(userID)) {
-    reply.code(400).send({ message: `This ID: ${userID} isn't UUID` });
+  if (!validate(userId)) {
+    reply.code(400).send({ message: `This ID: ${userId} isn't UUID` });
   }
 
-  const updatedUser = usersRepo.update(userID, data);
+  const updatedUser = await usersRepo.update(userId, data);
 
   if (updatedUser) {
     reply.code(200).send(updatedUser);
   } else {
-    reply.code(404).send({ message: `User with ID: ${userID} doesn't exist` });
+    reply.code(404).send({ message: `User with ID: ${userId} doesn't exist` });
   }
 };
 
