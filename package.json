@@ -11,8 +11,14 @@
   "scripts": {
     "start": "ts-node src/server.ts",
     "dev": "nodemon -L --exitcrash src/server.ts",
+    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js --config ./src/ormconfig.ts",
+    "migration:generate": "npm run typeorm migration:generate -- -n MigrationFile",
+    "migration:create": "npm run typeorm migration:create -- -n MigrationFile",
     "lint": "eslint --ext .js,.ts --fix src/",
     "test": "cross-env DEBUG=rs:* jest --testMatch \"<rootDir>/test/e2e/test/*.test.js\" --noStackTrace --runInBand",
+    "test:users": "cross-env DEBUG=rs:* jest --testMatch \"<rootDir>/test/e2e/test/users.test.js\" --noStackTrace --runInBand",
+    "test:tasks": "cross-env DEBUG=rs:* jest --testMatch \"<rootDir>/test/e2e/test/tasks.test.js\" --noStackTrace --runInBand",
+    "test:boards": "cross-env DEBUG=rs:* jest --testMatch \"<rootDir>/test/e2e/test/boards.test.js\" --noStackTrace --runInBand",    
     "test:auth": "cross-env DEBUG=rs:* TEST_MODE=auth jest --noStackTrace"
   },
   "keywords": [
