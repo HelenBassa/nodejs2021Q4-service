@@ -1,4 +1,4 @@
-import { v4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 class Task {
   id: string;
@@ -11,7 +11,7 @@ class Task {
 
   userId: string | null;
 
-  boardId: string | null;
+  boardId: string;
 
   columnId: string | null;
 
@@ -25,14 +25,15 @@ class Task {
    * @param columnId - uuid of the column.
    */
   constructor(
+    id = uuidv4(),
     title: string,
     order: number,
     description: string,
     userId: string | null,
-    boardId: string | null,
+    boardId: string,
     columnId: string | null
   ) {
-    this.id = v4();
+    this.id = id;
     this.title = title;
     this.order = order;
     this.description = description;
