@@ -9,8 +9,8 @@ const userRouter = async (fastify: FastifyInstance): Promise<void> => {
    * @param _ - incoming request object, not used
    * @param reply - outcoming reply object
    */
-  fastify.get('/users', (_, reply) => {
-    usersService.getAll(reply);
+  fastify.get('/users', async (_, reply) => {
+    await usersService.getAll(reply);
   });
 
   /**
@@ -18,17 +18,20 @@ const userRouter = async (fastify: FastifyInstance): Promise<void> => {
    * @param request - incoming request object
    * @param reply - outcoming reply object
    */
-  fastify.get<{ Params: UserParams }>('/users/:userId', (request, reply) => {
-    usersService.getOne(request, reply);
-  });
+  fastify.get<{ Params: UserParams }>(
+    '/users/:userId',
+    async (request, reply) => {
+      await usersService.getOne(request, reply);
+    }
+  );
 
   /**
    * Uses post method to create new user
    * @param request - incoming request object
    * @param reply - outcoming reply object
    */
-  fastify.post<{ Body: UserBody }>('/users', (request, reply) => {
-    usersService.create(request, reply);
+  fastify.post<{ Body: UserBody }>('/users', async (request, reply) => {
+    await usersService.create(request, reply);
   });
 
   /**
@@ -36,9 +39,12 @@ const userRouter = async (fastify: FastifyInstance): Promise<void> => {
    * @param request - incoming request object
    * @param reply - outcoming reply object
    */
-  fastify.delete<{ Params: UserParams }>('/users/:userId', (request, reply) => {
-    usersService.deleteOne(request, reply);
-  });
+  fastify.delete<{ Params: UserParams }>(
+    '/users/:userId',
+    async (request, reply) => {
+      await usersService.deleteOne(request, reply);
+    }
+  );
 
   /**
    * Uses put method to update user
@@ -48,8 +54,8 @@ const userRouter = async (fastify: FastifyInstance): Promise<void> => {
   fastify.put<{
     Params: UserParams;
     Body: UserBody;
-  }>('/users/:userId', (request, reply) => {
-    usersService.update(request, reply);
+  }>('/users/:userId', async (request, reply) => {
+    await usersService.update(request, reply);
   });
 };
 

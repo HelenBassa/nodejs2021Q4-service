@@ -30,11 +30,13 @@ const getOne = async (userId: string): Promise<User | undefined> => {
  * @param data - object with name, login and password fields
  * @returns object of new user with id, name and login fields
  */
-const create = async (data: UserBody): Promise<User> => {
+type UserWithoutPass = Omit<User, 'password'>;
+
+const create = async (data: UserBody): Promise<UserWithoutPass | false> => {
   const userRepository = getRepository(UserEntity);
   const user = userRepository.create(data);
   await userRepository.save(user);
-  return user;
+  return User.toResponse(user);
 };
 
 /**
