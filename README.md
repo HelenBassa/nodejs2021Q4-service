@@ -15,24 +15,18 @@ git clone https://github.com/HelenBassa/nodejs2021Q4-service.git
 
 ## Checkout branch
 
-- Checkout to `Task-8.-PostgreSQL-&-Typeorm` branch
+- Checkout to `Task-9.-Authentication-JWT` branch
 
-## Build and start containers for the REST service:
+## Build and start containers for the REST service in docker:
 
 ```bash
 docker-compose up
 ```
 
-## Running the REST service in docker:
-
-```bash
-docker container exec docker-basics-app npm run dev
-```
-
 ## Testing the REST service in docker:
 
 ```bash
-docker container exec docker-basics-app npm run test
+docker container exec docker-basics-app npm run test:auth
 ```
 
 ## How to install and start the REST service on **local machine**
