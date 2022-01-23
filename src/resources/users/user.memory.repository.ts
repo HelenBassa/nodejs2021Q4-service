@@ -3,6 +3,7 @@ import { getRepository } from 'typeorm';
 import { UserBody } from './user.types';
 import User from './user.model';
 import { User as UserEntity } from '../../entity/User';
+import loginService from '../login/login.service';
 
 /**
  * Returns all users from Postgres DB.
@@ -33,10 +34,18 @@ const getOne = async (userId: string): Promise<User | undefined> => {
 type UserWithoutPass = Omit<User, 'password'>;
 
 const create = async (data: UserBody): Promise<UserWithoutPass | false> => {
-  const userRepository = getRepository(UserEntity);
-  const user = userRepository.create(data);
-  await userRepository.save(user);
-  return User.toResponse(user);
+  const { name, login, password } = data;
+  if (password) {
+    const hashedPassword = await loginService.hashPassword(password);
+    const user = new User(name, login, hashedPassword);
+
+    const userRepository = getRepository(UserEntity);
+
+    const userNew = userRepository.create(user);
+    await userRepository.save(userNew);
+    return User.toResponse(userNew);
+  }
+  return false;
 };
 
 /**
@@ -66,11 +75,27 @@ const update = async (userId: string, data: UserBody): Promise<User | null> => {
   const user = await userRepository.findOne(userId);
 
   if (user) {
-    userRepository.merge(user, data);
+    const newPassword = '' + data.password;
+    const hashedPassword = await loginService.hashPassword(newPassword);
+    const newUser = {
+      ...data,
+      password: hashedPassword,
+    };
+
+    userRepository.merge(user, newUser);
     const results = await userRepository.save(user);
     return results;
   }
   return null;
 };
 
-export default { getAll, getOne, create, deleteOne, update };
+const getUserByProps = async (login: string) => {
+  const userRepository = getRepository(UserEntity);
+  const user = await userRepository.findOne({ where: { login } });
+  if (!user) {
+    return null;
+  }
+  return user;
+};
+
+export default { getAll, getOne, create, deleteOne, update, getUserByProps };
