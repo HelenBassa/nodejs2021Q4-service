@@ -19,7 +19,7 @@
     "test": "cross-env DEBUG=rs:* jest --testMatch \"<rootDir>/test/e2e/test/*.test.js\" --noStackTrace --runInBand",
     "test:users": "cross-env DEBUG=rs:* jest --testMatch \"<rootDir>/test/e2e/test/users.test.js\" --noStackTrace --runInBand",
     "test:tasks": "cross-env DEBUG=rs:* jest --testMatch \"<rootDir>/test/e2e/test/tasks.test.js\" --noStackTrace --runInBand",
-    "test:boards": "cross-env DEBUG=rs:* jest --testMatch \"<rootDir>/test/e2e/test/boards.test.js\" --noStackTrace --runInBand",    
+    "test:boards": "cross-env DEBUG=rs:* jest --testMatch \"<rootDir>/test/e2e/test/boards.test.js\" --noStackTrace --runInBand",
     "test:auth": "cross-env DEBUG=rs:* TEST_MODE=auth jest --noStackTrace"
   },
   "keywords": [
@@ -52,11 +52,13 @@
     ]
   },
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "cross-env": "7.0.3",
     "dotenv": "10.0.0",
     "fastify": "^3.24.1",
     "fastify-plugin": "^3.0.0",
     "fastify-swagger": "^4.12.6",
+    "jsonwebtoken": "^8.5.1",
     "pg": "^8.7.1",
     "pino": "^7.6.1",
     "reflect-metadata": "^0.1.13",
@@ -65,6 +67,8 @@
     "yamljs": "0.3.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^16.11.12",
     "@types/pg": "^8.6.4",
     "@types/pino": "^7.0.5",
