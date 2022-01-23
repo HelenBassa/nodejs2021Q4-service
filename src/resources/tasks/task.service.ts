@@ -4,6 +4,7 @@ import { validate } from 'uuid';
 import { BoardParams } from '../boards/board.types';
 import { TaskBody, TaskParams } from './task.types';
 import tasksRepo from './task.memory.repository';
+import { HTTP_CODES } from '../../constants';
 
 /**
  * Handles incoming request to get all tasks at the board.
@@ -17,11 +18,13 @@ const getAllByboardId = async (
   const { boardId } = request.params;
 
   if (!validate(boardId)) {
-    reply.code(400).send({ message: `This ID: ${boardId} isn't UUID` });
+    reply
+      .code(HTTP_CODES.BAD_REQUEST)
+      .send({ message: `This ID: ${boardId} isn't UUID` });
   }
 
   const tasks = await tasksRepo.getAll(boardId);
-  reply.code(200).send(tasks);
+  reply.code(HTTP_CODES.OK).send(tasks);
 };
 
 /**
@@ -37,19 +40,25 @@ const getOne = async (
   const { boardId } = request.params;
 
   if (!validate(taskId)) {
-    reply.code(400).send({ message: `This ID: ${taskId} isn't UUID` });
+    reply
+      .code(HTTP_CODES.BAD_REQUEST)
+      .send({ message: `This ID: ${taskId} isn't UUID` });
   }
 
   if (!validate(boardId)) {
-    reply.code(400).send({ message: `This ID: ${boardId} isn't UUID` });
+    reply
+      .code(HTTP_CODES.BAD_REQUEST)
+      .send({ message: `This ID: ${boardId} isn't UUID` });
   }
 
   const task = await tasksRepo.getOne(taskId);
 
   if (task) {
-    reply.code(200).send(task);
+    reply.code(HTTP_CODES.OK).send(task);
   } else {
-    reply.code(404).send({ message: `Task with ID: ${taskId} doesn't exist` });
+    reply
+      .code(HTTP_CODES.NOT_FOUND)
+      .send({ message: `Task with ID: ${taskId} doesn't exist` });
   }
 };
 
@@ -73,7 +82,7 @@ const create = async (
     columnId,
   });
 
-  reply.code(201).send(createdTask);
+  reply.code(HTTP_CODES.CREATED).send(createdTask);
 };
 
 /**
@@ -88,15 +97,19 @@ const deleteOne = async (
   const { taskId } = request.params;
 
   if (!validate(taskId)) {
-    reply.code(400).send({ message: `This ID: ${taskId} isn't UUID` });
+    reply
+      .code(HTTP_CODES.BAD_REQUEST)
+      .send({ message: `This ID: ${taskId} isn't UUID` });
   }
 
   const deletedTask = await tasksRepo.deleteOne(taskId);
 
   if (deletedTask) {
-    reply.code(204);
+    reply.code(HTTP_CODES.NO_CONTENT);
   } else {
-    reply.code(404).send({ message: `Task with ID: ${taskId} doesn't exist` });
+    reply
+      .code(HTTP_CODES.NOT_FOUND)
+      .send({ message: `Task with ID: ${taskId} doesn't exist` });
   }
 };
 
@@ -127,15 +140,19 @@ const update = async (
   const data = request.body;
 
   if (!validate(taskId)) {
-    reply.code(400).send({ message: `This ID: ${taskId} isn't UUID` });
+    reply
+      .code(HTTP_CODES.BAD_REQUEST)
+      .send({ message: `This ID: ${taskId} isn't UUID` });
   }
 
   const updatedTask = await tasksRepo.update(taskId, data);
 
   if (updatedTask) {
-    reply.code(200).send(updatedTask);
+    reply.code(HTTP_CODES.OK).send(updatedTask);
   } else {
-    reply.code(404).send({ message: `Task with ID: ${taskId} doesn't exist` });
+    reply
+      .code(HTTP_CODES.NOT_FOUND)
+      .send({ message: `Task with ID: ${taskId} doesn't exist` });
   }
 };
 

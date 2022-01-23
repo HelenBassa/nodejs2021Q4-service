@@ -3,6 +3,7 @@ import { validate } from 'uuid';
 
 import { UserBody, UserParams } from './user.types';
 import usersRepo from './user.memory.repository';
+import { HTTP_CODES } from '../../constants';
 
 /**
  * Handles incoming request to get all users
@@ -11,7 +12,7 @@ import usersRepo from './user.memory.repository';
  */
 const getAll = async (reply: FastifyReply) => {
   const users = await usersRepo.getAll();
-  reply.code(200).send(users);
+  reply.code(HTTP_CODES.OK).send(users);
 };
 
 /**
@@ -26,15 +27,19 @@ const getOne = async (
   const { userId } = request.params;
 
   if (!validate(userId)) {
-    reply.code(400).send({ message: `This ID: ${userId} isn't UUID` });
+    reply
+      .code(HTTP_CODES.BAD_REQUEST)
+      .send({ message: `This ID: ${userId} isn't UUID` });
   }
 
   const user = await usersRepo.getOne(userId);
 
   if (user) {
-    reply.code(200).send(user);
+    reply.code(HTTP_CODES.OK).send(user);
   } else {
-    reply.code(404).send({ message: `User with ID: ${userId} doesn't exist` });
+    reply
+      .code(HTTP_CODES.NOT_FOUND)
+      .send({ message: `User with ID: ${userId} doesn't exist` });
   }
 };
 
@@ -49,7 +54,7 @@ const create = async (
 ) => {
   const data = request.body;
   const createdUser = await usersRepo.create(data);
-  reply.code(201).send(createdUser);
+  reply.code(HTTP_CODES.CREATED).send(createdUser);
 };
 
 /**
@@ -64,15 +69,19 @@ const deleteOne = async (
   const { userId } = request.params;
 
   if (!validate(userId)) {
-    reply.code(400).send({ message: `This ID: ${userId} isn't UUID` });
+    reply
+      .code(HTTP_CODES.BAD_REQUEST)
+      .send({ message: `This ID: ${userId} isn't UUID` });
   }
 
   const deletedUser = await usersRepo.deleteOne(userId);
 
   if (deletedUser) {
-    reply.code(204);
+    reply.code(HTTP_CODES.NO_CONTENT);
   } else {
-    reply.code(404).send({ message: `User with ID: ${userId} doesn't exist` });
+    reply
+      .code(HTTP_CODES.NOT_FOUND)
+      .send({ message: `User with ID: ${userId} doesn't exist` });
   }
 };
 
@@ -89,15 +98,19 @@ const update = async (
   const data = request.body;
 
   if (!validate(userId)) {
-    reply.code(400).send({ message: `This ID: ${userId} isn't UUID` });
+    reply
+      .code(HTTP_CODES.BAD_REQUEST)
+      .send({ message: `This ID: ${userId} isn't UUID` });
   }
 
   const updatedUser = await usersRepo.update(userId, data);
 
   if (updatedUser) {
-    reply.code(200).send(updatedUser);
+    reply.code(HTTP_CODES.OK).send(updatedUser);
   } else {
-    reply.code(404).send({ message: `User with ID: ${userId} doesn't exist` });
+    reply
+      .code(HTTP_CODES.NOT_FOUND)
+      .send({ message: `User with ID: ${userId} doesn't exist` });
   }
 };
 

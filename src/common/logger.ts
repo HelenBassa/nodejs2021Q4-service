@@ -6,6 +6,7 @@ import {
   LogLevel,
 } from 'fastify';
 import pino from 'pino';
+import { HTTP_CODES } from '../constants';
 import { LOG_LEVEL } from './config';
 
 const transport = pino.transport({
@@ -78,11 +79,17 @@ export const onResponseLog = (
   reply: FastifyReply
 ) => {
   let logLevel: LogLevel;
-  if (reply.statusCode >= 200 && reply.statusCode < 400) {
+  if (
+    reply.statusCode >= HTTP_CODES.OK &&
+    reply.statusCode < HTTP_CODES.BAD_REQUEST
+  ) {
     logLevel = 'info';
-  } else if (reply.statusCode >= 400 && reply.statusCode < 500) {
+  } else if (
+    reply.statusCode >= HTTP_CODES.BAD_REQUEST &&
+    reply.statusCode < HTTP_CODES.INTERNAL_SERVER_ERROR
+  ) {
     logLevel = 'warn';
-  } else if (reply.statusCode >= 500) {
+  } else if (reply.statusCode >= HTTP_CODES.INTERNAL_SERVER_ERROR) {
     logLevel = 'error';
   } else {
     logLevel = 'fatal';
