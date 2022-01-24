@@ -7,26 +7,34 @@ import { User as UserEntity } from '../../entity/User';
 import usersRepo from '../users/user.memory.repository';
 import { NAME, LOGIN, PASSWORD, SALT } from '../../constants';
 
-const SECRET_KEY = '' + JWT_SECRET_KEY;
+const SECRET_KEY = `${JWT_SECRET_KEY}`;
 
-const addAdmin = async () => {
-  try {
-    const userRepository = getRepository(UserEntity);
-    const admin = await userRepository.findOne({ where: { login: LOGIN } });
-    if (!admin) {
-      const hash = await hashPassword(PASSWORD);
-      const newUser = new User(NAME, LOGIN, hash);
-
-      await userRepository.save(newUser);
-      return User.toResponse(newUser);
-    }
-  } catch (error) {
-    throw new Error();
-  }
+const hashPassword = async (password: string) => {
+  const salt = await bcrypt.genSalt(SALT);
+  const hash = await bcrypt.hash(password, salt);
+  return hash;
 };
 
-const signToken = async (login: string, password: string) => {
-  const user = await usersRepo.getUserByProps(login);
+const checkPassword = async (password: string, hash: string) => {
+  const isSimilar = await bcrypt.compare(password, hash);
+  return isSimilar;
+};
+
+const addAdmin = async () => {
+  const userRepository = getRepository(UserEntity);
+  const admin = await userRepository.findOne({ where: { login: LOGIN } });
+  if (!admin) {
+    const hash = await hashPassword(PASSWORD);
+    const newUser = new User(NAME, LOGIN, hash);
+
+    await userRepository.save(newUser);
+    return User.toResponse(newUser);
+  }
+  return null;
+};
+
+const signToken = async (userLogin: string, password: string) => {
+  const user = await usersRepo.getUserByProps(userLogin);
   if (!user) {
     return null;
   }
@@ -40,17 +48,6 @@ const signToken = async (login: string, password: string) => {
     }
   }
   return null;
-};
-
-const hashPassword = async (password: string) => {
-  const salt = await bcrypt.genSalt(SALT);
-  const hash = await bcrypt.hash(password, salt);
-  return hash;
-};
-
-const checkPassword = async (password: string, hash: string) => {
-  const isSimilar = await bcrypt.compare(password, hash);
-  return isSimilar;
 };
 
 export default {

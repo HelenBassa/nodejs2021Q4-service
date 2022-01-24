@@ -2,7 +2,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import * as jwt from 'jsonwebtoken';
 import { JWT_SECRET_KEY } from '../../common/config';
 import { PostLoginReq } from './login.types';
-import loginService from '../login/login.service';
+import loginService from "./login.service";
 import {
   APP_URL,
   AUTH_TYPE,
@@ -11,7 +11,7 @@ import {
   WRONG_LOGIN_PASS,
 } from '../../constants';
 
-const SECRET_KEY = '' + JWT_SECRET_KEY;
+const SECRET_KEY = `${  JWT_SECRET_KEY}`;
 
 const postLogin = async (request: PostLoginReq, reply: FastifyReply) => {
   const { login, password } = request.body;

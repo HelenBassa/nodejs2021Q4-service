@@ -75,7 +75,7 @@ const update = async (userId: string, data: UserBody): Promise<User | null> => {
   const user = await userRepository.findOne(userId);
 
   if (user) {
-    const newPassword = '' + data.password;
+    const newPassword = `${  data.password}`;
     const hashedPassword = await loginService.hashPassword(newPassword);
     const newUser = {
       ...data,
