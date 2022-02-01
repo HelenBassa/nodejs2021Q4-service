@@ -6,7 +6,7 @@ import {
   LogLevel,
 } from 'fastify';
 import pino from 'pino';
-import { HTTP_CODES } from '../constants';
+import { HTTP_CODES } from './constants';
 import { LOG_LEVEL } from './config';
 
 const transport = pino.transport({
@@ -64,7 +64,7 @@ export const LOG_CONFIG: FastifyServerOptions = {
         },
       },
     },
-    transport
+    transport,
   ),
 };
 
@@ -76,7 +76,7 @@ export const preHandlerLog = (request: FastifyRequest) => {
 
 export const onResponseLog = (
   _request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) => {
   let logLevel: LogLevel;
   if (

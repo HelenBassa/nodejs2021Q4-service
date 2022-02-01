@@ -2,3 +2,4 @@ node_modules
 .vscode
 logs
 postgres_db/pgdata
+dist

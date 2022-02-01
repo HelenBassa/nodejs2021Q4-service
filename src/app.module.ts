@@ -1,0 +1,27 @@
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { UsersModule } from './users/users.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Connection } from 'typeorm';
+
+import configuration from './common/config';
+import connectionOptions from './ormconfig';
+// import { User } from './users/entities/user.entity';
+
+@Module({
+  imports: [
+    TypeOrmModule.forRoot(connectionOptions),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+    }),
+    UsersModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {
+  // constructor(private connection: Connection) {}
+}
