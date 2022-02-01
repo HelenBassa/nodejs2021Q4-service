@@ -1,70 +1,101 @@
-import User from './user.model';
-// import tasksService from '../tasks/task.service';
-import { UserBody } from './user.types';
+import { getRepository } from 'typeorm';
 
-let usersRepo: User[] = [];
+import { UserBody } from './user.types';
+import User from './user.model';
+import { User as UserEntity } from '../../entity/User';
+import loginService from '../login/login.service';
 
 /**
- * Returns all users from in-memory DB.
+ * Returns all users from Postgres DB.
  *
  * @returns array of all users
  */
-const getAll = () => usersRepo.map((user) => User.toResponse(user));
-
-/**
- * Returns user by id from in-memory DB.
- * @param userID - uuid of user
- * @returns object of user or undefined if not found
- */
-const getOne = (userID: string) =>
-  User.toResponse(usersRepo.find((user) => user.id === userID));
-
-/**
- * Creates user in in-memory DB.
- * @param data - object with name, login and password fields
- * @returns object of new user with id, name and login fields
- */
-const create = (data: UserBody) => {
-  const { name, login, password } = data;
-  const createdUser = new User(name, login, password);
-  usersRepo = [...usersRepo, createdUser];
-  return User.toResponse(createdUser);
+const getAll = async (): Promise<User[]> => {
+  const userRepository = getRepository(UserEntity);
+  const users = await userRepository.find();
+  return users;
 };
 
 /**
- * Deletes user by id from in-memory DB.
- * @param userID - uuid of user
+ * Returns user by id from Postgres DB.
+ * @param userId - uuid of user
+ * @returns object of user or undefined if not found
+ */
+const getOne = async (userId: string): Promise<User | undefined> => {
+  const user = await getRepository(UserEntity).findOne(userId);
+  return user;
+};
+
+/**
+ * Creates user in Postgres DB.
+ * @param data - object with name, login and password fields
+ * @returns object of new user with id, name and login fields
+ */
+type UserWithoutPass = Omit<User, 'password'>;
+
+const create = async (data: UserBody): Promise<UserWithoutPass | false> => {
+  const { name, login, password } = data;
+  if (password) {
+    const hashedPassword = await loginService.hashPassword(password);
+    const user = new User(name, login, hashedPassword);
+
+    const userRepository = getRepository(UserEntity);
+
+    const userNew = userRepository.create(user);
+    await userRepository.save(userNew);
+    return User.toResponse(userNew);
+  }
+  return false;
+};
+
+/**
+ * Deletes user by id from Postgres DB.
+ * @param userId - uuid of user
  * @returns user if user was found and deleted or null if not
  */
-const deleteOne = (userID: string) => {
-  const deletedUser = usersRepo.find((user) => user.id === userID);
-  if (deletedUser) {
-    // TODO: Fix uncorrectly work +bug
-    // const userTasks = await tasksService.getAllTasksByUserID(userID);
-    // tasksService.removeTasksFromUser(userTasks);
-    usersRepo = usersRepo.filter((user) => user.id !== userID);
-    return deletedUser;
+const deleteOne = async (userId: string): Promise<User | null> => {
+  const userRepository = getRepository(UserEntity);
+  const user = await userRepository.findOne(userId);
+  const results = await userRepository.delete(userId);
+
+  if (results && user) {
+    return user;
   }
   return null;
 };
 
 /**
- * Updates user by id in in-memory DB.
- * @param userID - uuid of user
+ * Updates user by id in Postgres DB.
+ * @param userId - uuid of user
  * @param data - object with name, login, password fields
  * @returns object of updated user with id, name and login fields
  */
-const update = (userID: string, data: UserBody) => {
-  const { name, login, password } = data;
-  const id = userID;
-  const updatedUser = usersRepo.find((user) => user.id === userID);
-  if (updatedUser) {
-    usersRepo = usersRepo.map((user) =>
-      user.id === id ? { id, name, login, password } : user
-    );
-  }
+const update = async (userId: string, data: UserBody): Promise<User | null> => {
+  const userRepository = getRepository(UserEntity);
+  const user = await userRepository.findOne(userId);
 
-  return User.toResponse(usersRepo.find((user) => user.id === id));
+  if (user) {
+    const newPassword = `${  data.password}`;
+    const hashedPassword = await loginService.hashPassword(newPassword);
+    const newUser = {
+      ...data,
+      password: hashedPassword,
+    };
+
+    userRepository.merge(user, newUser);
+    const results = await userRepository.save(user);
+    return results;
+  }
+  return null;
 };
 
-export default { getAll, getOne, create, deleteOne, update };
+const getUserByProps = async (login: string) => {
+  const userRepository = getRepository(UserEntity);
+  const user = await userRepository.findOne({ where: { login } });
+  if (!user) {
+    return null;
+  }
+  return user;
+};
+
+export default { getAll, getOne, create, deleteOne, update, getUserByProps };

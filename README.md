@@ -15,24 +15,18 @@ git clone https://github.com/HelenBassa/nodejs2021Q4-service.git
 
 ## Checkout branch
 
-- Checkout to `Task-7.-Docker-basics` branch
+- Checkout to `Task-9.-Authentication-JWT` branch
 
-## Build and start containers for the REST service:
-
-```bash
-docker-compose up -d
-```
-
-## Running the REST service in docker:
+## Build and start containers for the REST service in docker:
 
 ```bash
-docker container exec docker-basics-app npm run dev
+docker-compose up
 ```
 
 ## Testing the REST service in docker:
 
 ```bash
-docker container exec docker-basics-app npm run test
+docker container exec docker-basics-app npm run test:auth
 ```
 
 ## How to install and start the REST service on **local machine**

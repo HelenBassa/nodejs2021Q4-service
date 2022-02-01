@@ -1,7 +1,8 @@
 import { FastifyInstance } from 'fastify';
+
 import { BoardParams } from '../boards/board.types';
-import tasksService from './task.service';
 import { TaskBody, TaskParams } from './task.types';
+import tasksService from './task.service';
 
 const taskRouter = async (fastify: FastifyInstance): Promise<void> => {
   /**
@@ -12,7 +13,7 @@ const taskRouter = async (fastify: FastifyInstance): Promise<void> => {
   fastify.get<{
     Params: BoardParams;
   }>('/boards/:boardId/tasks', async (request, reply) => {
-    tasksService.getAllByBoardID(request, reply);
+    await tasksService.getAllByboardId(request, reply);
   });
 
   /**
@@ -23,7 +24,7 @@ const taskRouter = async (fastify: FastifyInstance): Promise<void> => {
   fastify.get<{
     Params: TaskParams;
   }>('/boards/:boardId/tasks/:taskId', async (request, reply) => {
-    tasksService.getOne(request, reply);
+    await tasksService.getOne(request, reply);
   });
 
   /**
@@ -35,7 +36,7 @@ const taskRouter = async (fastify: FastifyInstance): Promise<void> => {
     Params: BoardParams;
     Body: TaskBody;
   }>('/boards/:boardId/tasks', async (request, reply) => {
-    tasksService.create(request, reply);
+    await tasksService.create(request, reply);
   });
 
   /**
@@ -46,7 +47,7 @@ const taskRouter = async (fastify: FastifyInstance): Promise<void> => {
   fastify.delete<{
     Params: TaskParams;
   }>('/boards/:boardId/tasks/:taskId', async (request, reply) => {
-    tasksService.deleteOne(request, reply);
+    await tasksService.deleteOne(request, reply);
   });
 
   /**
@@ -58,7 +59,7 @@ const taskRouter = async (fastify: FastifyInstance): Promise<void> => {
     Params: TaskParams;
     Body: TaskBody;
   }>('/boards/:boardId/tasks/:taskId', async (request, reply) => {
-    tasksService.update(request, reply);
+    await tasksService.update(request, reply);
   });
 };
 

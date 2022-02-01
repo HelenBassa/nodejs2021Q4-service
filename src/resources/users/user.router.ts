@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
-import usersService from './user.service';
+
 import { UserBody, UserParams } from './user.types';
+import usersService from './user.service';
 
 const userRouter = async (fastify: FastifyInstance): Promise<void> => {
   /**
@@ -9,7 +10,7 @@ const userRouter = async (fastify: FastifyInstance): Promise<void> => {
    * @param reply - outcoming reply object
    */
   fastify.get('/users', async (_, reply) => {
-    usersService.getAll(reply);
+    await usersService.getAll(reply);
   });
 
   /**
@@ -20,7 +21,7 @@ const userRouter = async (fastify: FastifyInstance): Promise<void> => {
   fastify.get<{ Params: UserParams }>(
     '/users/:userId',
     async (request, reply) => {
-      usersService.getOne(request, reply);
+      await usersService.getOne(request, reply);
     }
   );
 
@@ -30,7 +31,7 @@ const userRouter = async (fastify: FastifyInstance): Promise<void> => {
    * @param reply - outcoming reply object
    */
   fastify.post<{ Body: UserBody }>('/users', async (request, reply) => {
-    usersService.create(request, reply);
+    await usersService.create(request, reply);
   });
 
   /**
@@ -41,7 +42,7 @@ const userRouter = async (fastify: FastifyInstance): Promise<void> => {
   fastify.delete<{ Params: UserParams }>(
     '/users/:userId',
     async (request, reply) => {
-      usersService.deleteOne(request, reply);
+      await usersService.deleteOne(request, reply);
     }
   );
 
@@ -54,7 +55,7 @@ const userRouter = async (fastify: FastifyInstance): Promise<void> => {
     Params: UserParams;
     Body: UserBody;
   }>('/users/:userId', async (request, reply) => {
-    usersService.update(request, reply);
+    await usersService.update(request, reply);
   });
 };
 

@@ -1,8 +1,9 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { validate } from 'uuid';
-import boardsRepo from './board.memory.repository';
-// import tasksService from '../tasks/task.service';
+
+import { HTTP_CODES } from '../../constants';
 import { BoardBody, BoardParams } from './board.types';
+import boardsRepo from './board.memory.repository';
 
 /**
  * Handles incoming request to get all boards
@@ -10,8 +11,8 @@ import { BoardBody, BoardParams } from './board.types';
  * @param reply - outcoming reply object
  */
 const getAll = async (reply: FastifyReply) => {
-  const boards = boardsRepo.getAll();
-  reply.code(200).send(boards);
+  const boards = await boardsRepo.getAll();
+  reply.code(HTTP_CODES.OK).send(boards);
 };
 
 /**
@@ -23,20 +24,22 @@ const getOne = async (
   request: FastifyRequest<{ Params: BoardParams }>,
   reply: FastifyReply
 ) => {
-  const boardID = request.params.boardId;
+  const { boardId } = request.params;
 
-  if (!validate(boardID)) {
-    reply.code(400).send({ message: `This ID: ${boardID} isn't UUID` });
+  if (!validate(boardId)) {
+    reply
+      .code(HTTP_CODES.BAD_REQUEST)
+      .send({ message: `This ID: ${boardId} isn't UUID` });
   }
 
-  const board = boardsRepo.getOne(boardID);
+  const board = await boardsRepo.getOne(boardId);
 
   if (board) {
-    reply.code(200).send(board);
+    reply.code(HTTP_CODES.OK).send(board);
   } else {
     reply
-      .code(404)
-      .send({ message: `Board with ID: ${boardID} doesn't exist` });
+      .code(HTTP_CODES.NOT_FOUND)
+      .send({ message: `Board with ID: ${boardId} doesn't exist` });
   }
 };
 
@@ -50,8 +53,8 @@ const create = async (
   reply: FastifyReply
 ) => {
   const data = request.body;
-  const createdBoard = boardsRepo.create(data);
-  reply.code(201).send(createdBoard);
+  const createdBoard = await boardsRepo.create(data);
+  reply.code(HTTP_CODES.CREATED).send(createdBoard);
 };
 
 /**
@@ -63,23 +66,22 @@ const deleteOne = async (
   request: FastifyRequest<{ Params: BoardParams }>,
   reply: FastifyReply
 ) => {
-  const boardID = request.params.boardId;
+  const { boardId } = request.params;
 
-  if (!validate(boardID)) {
-    reply.code(400).send({ message: `This ID: ${boardID} isn't UUID` });
+  if (!validate(boardId)) {
+    reply
+      .code(HTTP_CODES.BAD_REQUEST)
+      .send({ message: `This ID: ${boardId} isn't UUID` });
   }
 
-  const deletedBoard = boardsRepo.deleteOne(boardID);
+  const deletedBoard = await boardsRepo.deleteOne(boardId);
 
   if (deletedBoard) {
-    // TODO: Fix uncorrectly work +bug
-    // const tasksOnBoard = tasksService.getAllTasksByBoardID(boardID);
-    // tasksService.deleteTasksOnBoard(await tasksOnBoard);
-    reply.code(204);
+    reply.code(HTTP_CODES.NO_CONTENT);
   } else {
     reply
-      .code(404)
-      .send({ message: `Board with ID: ${boardID} doesn't exist` });
+      .code(HTTP_CODES.NOT_FOUND)
+      .send({ message: `Board with ID: ${boardId} doesn't exist` });
   }
 };
 
@@ -92,21 +94,23 @@ const update = async (
   request: FastifyRequest<{ Params: BoardParams; Body: BoardBody }>,
   reply: FastifyReply
 ) => {
-  const boardID = request.params.boardId;
+  const { boardId } = request.params;
   const data = request.body;
 
-  if (!validate(boardID)) {
-    reply.code(400).send({ message: `This ID: ${boardID} isn't UUID` });
+  if (!validate(boardId)) {
+    reply
+      .code(HTTP_CODES.BAD_REQUEST)
+      .send({ message: `This ID: ${boardId} isn't UUID` });
   }
 
-  const updatedBoard = boardsRepo.update(boardID, data);
+  const updatedBoard = await boardsRepo.update(boardId, data);
 
   if (updatedBoard) {
-    reply.code(200).send(updatedBoard);
+    reply.code(HTTP_CODES.OK).send(updatedBoard);
   } else {
     reply
-      .code(404)
-      .send({ message: `Board with ID: ${boardID} doesn't exist` });
+      .code(HTTP_CODES.NOT_FOUND)
+      .send({ message: `Board with ID: ${boardId} doesn't exist` });
   }
 };
 

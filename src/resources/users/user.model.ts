@@ -1,4 +1,4 @@
-import { v4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 class User {
   id: string;
@@ -15,8 +15,8 @@ class User {
    * @param login - login of user
    * @param password - password of user
    */
-  constructor(name: string, login: string, password: string) {
-    this.id = v4();
+  constructor(name: string, login: string, password: string, id = uuidv4()) {
+    this.id = id;
     this.name = name;
     this.login = login;
     this.password = password;

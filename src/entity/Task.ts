@@ -1,0 +1,49 @@
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+
+import type { Board } from './Board';
+import type { User } from './User';
+
+@Entity()
+export class Task {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
+
+  @Column()
+  title!: string;
+
+  @Column()
+  order!: number;
+
+  @Column()
+  description!: string;
+
+  @Column('uuid', {
+    nullable: true,
+  })
+  columnId!: string | null;
+
+  @Column('uuid', {
+    nullable: true,
+  })
+  userId!: string | null;
+
+  @Column('uuid', {
+    nullable: true,
+  })
+  boardId!: string;
+
+  @ManyToOne('User', 'tasks', {
+    eager: true,
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
+  user!: User;
+
+  @ManyToOne('Board', 'tasks', {
+    eager: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  board!: Board;
+}
