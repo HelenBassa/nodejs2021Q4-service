@@ -6,14 +6,20 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
+import { validate } from 'uuid';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { WithoutPassUserEntity } from './entities/without-pass-user.entity';
+import { UserNotFoundException } from './errors/user-not-found.errors';
+import { IsntUUIDException } from './errors/isnt-uuid.error';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('users')
+@UseGuards(AuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -35,26 +41,18 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<UserEntity> {
+  findOne(@Param('id') id: string): Promise<UserEntity | undefined> {
+    if (!validate(id)) {
+      throw new IsntUUIDException(id);
+    }
+
     const user = this.usersService.findOne(id);
-    return user;
-    // const { userId } = request.params;
 
-    // if (!validate(userId)) {
-    //   reply
-    //     .code(HTTP_CODES.BAD_REQUEST)
-    //     .send({ message: `This ID: ${userId} isn't UUID` });
-    // }
+    if (user) {
+      return user;
+    }
 
-    // const user = await usersRepo.getOne(userId);
-
-    // if (user) {
-    //   reply.code(HTTP_CODES.OK).send(user);
-    // } else {
-    //   reply
-    //     .code(HTTP_CODES.NOT_FOUND)
-    //     .send({ message: `User with ID: ${userId} doesn't exist` });
-    // }
+    throw new UserNotFoundException(id);
   }
 
   @Patch(':id')
@@ -62,46 +60,31 @@ export class UsersController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserEntity> {
-    return this.usersService.update(id, updateUserDto);
-    // const { userId } = request.params;
-    // const data = request.body;
+    if (!validate(id)) {
+      throw new IsntUUIDException(id);
+    }
 
-    // if (!validate(userId)) {
-    //   reply
-    //     .code(HTTP_CODES.BAD_REQUEST)
-    //     .send({ message: `This ID: ${userId} isn't UUID` });
-    // }
+    const updatedUser = this.usersService.update(id, updateUserDto);
 
-    // const updatedUser = await usersRepo.update(userId, data);
+    if (updatedUser) {
+      return updatedUser;
+    }
 
-    // if (updatedUser) {
-    //   reply.code(HTTP_CODES.OK).send(updatedUser);
-    // } else {
-    //   reply
-    //     .code(HTTP_CODES.NOT_FOUND)
-    //     .send({ message: `User with ID: ${userId} doesn't exist` });
-    // }
+    throw new UserNotFoundException(id);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string): Promise<void> {
-    return this.usersService.remove(id);
-    // const { userId } = request.params;
+    if (!validate(id)) {
+      throw new IsntUUIDException(id);
+    }
 
-    // if (!validate(userId)) {
-    //   reply
-    //     .code(HTTP_CODES.BAD_REQUEST)
-    //     .send({ message: `This ID: ${userId} isn't UUID` });
-    // }
+    const deletedUser = this.usersService.remove(id);
 
-    // const deletedUser = await usersRepo.deleteOne(userId);
+    if (deletedUser) {
+      return deletedUser;
+    }
 
-    // if (deletedUser) {
-    //   reply.code(HTTP_CODES.NO_CONTENT);
-    // } else {
-    //   reply
-    //     .code(HTTP_CODES.NOT_FOUND)
-    //     .send({ message: `User with ID: ${userId} doesn't exist` });
-    // }
+    throw new UserNotFoundException(id);
   }
 }

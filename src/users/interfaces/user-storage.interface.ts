@@ -11,9 +11,3 @@ export interface UsersStorage {
   update: (user: UserDto, params: UpdateUserDto) => UserEntity;
   deleteOne: (id: string) => void;
 }
-
-// export type UserBody = {
-//   name: string;
-//   login: string;
-//   password: string;
-// };

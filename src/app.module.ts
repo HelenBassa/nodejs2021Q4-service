@@ -8,7 +8,7 @@ import { Connection } from 'typeorm';
 
 import configuration from './common/config';
 import connectionOptions from './ormconfig';
-// import { User } from './users/entities/user.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,6 +18,7 @@ import connectionOptions from './ormconfig';
       load: [configuration],
     }),
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
