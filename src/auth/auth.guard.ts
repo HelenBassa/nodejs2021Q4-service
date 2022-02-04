@@ -16,9 +16,7 @@ export class AuthGuard implements CanActivate {
         request.url === APP_URL.LOGIN
       )
     ) {
-      console.log(request.headers);
       const authHeader = request.headers.authorization;
-      console.log(authHeader);
 
       if (authHeader !== undefined) {
         const tokenStr = request.headers.authorization;

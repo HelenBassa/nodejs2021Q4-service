@@ -3,45 +3,41 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
+  Put,
+  HttpCode,
 } from '@nestjs/common';
 import { validate } from 'uuid';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserEntity } from './entities/user.entity';
-import { WithoutPassUserEntity } from './entities/without-pass-user.entity';
 import { UserNotFoundException } from './errors/user-not-found.errors';
 import { IsntUUIDException } from './errors/isnt-uuid.error';
 import { AuthGuard } from '../auth/auth.guard';
+import { TasksService } from '../tasks/tasks.service';
 
 @Controller('users')
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly tasksService: TasksService,
+  ) {}
 
   @Post()
-  create(
-    @Body() createUserDto: CreateUserDto,
-  ): Promise<WithoutPassUserEntity | false> {
+  create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
-    // const data = request.body;
-    // const createdUser = await usersRepo.create(data);
-    // reply.code(HTTP_CODES.CREATED).send(createdUser);
   }
 
   @Get()
-  findAll(): Promise<UserEntity[]> {
+  findAll() {
     return this.usersService.findAll();
-    // const users = await usersRepo.getAll();
-    // reply.code(HTTP_CODES.OK).send(users);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<UserEntity | undefined> {
+  findOne(@Param('id') id: string) {
     if (!validate(id)) {
       throw new IsntUUIDException(id);
     }
@@ -55,11 +51,8 @@ export class UsersController {
     throw new UserNotFoundException(id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
-  ): Promise<UserEntity> {
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     if (!validate(id)) {
       throw new IsntUUIDException(id);
     }
@@ -74,17 +67,15 @@ export class UsersController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<void> {
+  async remove(@Param('id') id: string) {
     if (!validate(id)) {
       throw new IsntUUIDException(id);
     }
 
-    const deletedUser = this.usersService.remove(id);
+    await this.usersService.remove(id);
 
-    if (deletedUser) {
-      return deletedUser;
-    }
+    await this.tasksService.unassignUser(id);
 
-    throw new UserNotFoundException(id);
+    // throw new UserNotFoundException(id);
   }
 }

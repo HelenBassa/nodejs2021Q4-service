@@ -9,7 +9,6 @@ import User from './models/users.model';
 import { UserEntity } from './entities/user.entity';
 import { WithoutPassUserEntity } from './entities/without-pass-user.entity';
 
-// import loginService from '../login/login.service';
 import { LOGIN, NAME, PASSWORD } from '../common/constants';
 import { AuthService } from '../auth/auth.service';
 
@@ -31,9 +30,9 @@ export class UsersService {
       // const hashedPassword = await loginService.hashPassword(password);
       const hashedPassword = await this.authService.hashPassword(password);
       const user = new User(name, login, hashedPassword);
-      const userNew = this.usersRepository.create(user);
-      await this.usersRepository.save(userNew);
-      return User.toResponse(userNew);
+      const createdUser = this.usersRepository.create(user);
+      await this.usersRepository.save(createdUser);
+      return User.toResponse(createdUser);
     }
 
     return false;
@@ -49,15 +48,16 @@ export class UsersService {
       return user;
     }
     return null;
-    // return this.usersRepository.findOne(id);
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserEntity | undefined> {
     const user = await this.usersRepository.findOne(id);
 
     if (user) {
       const newPassword = `${updateUserDto.password}`;
-      // const hashedPassword = await loginService.hashPassword(newPassword);
       const hashedPassword = await this.authService.hashPassword(newPassword);
       const newUser = {
         ...updateUserDto,
@@ -65,8 +65,8 @@ export class UsersService {
       };
 
       this.usersRepository.merge(user, newUser);
-      const results = await this.usersRepository.save(user);
-      return results;
+      const updatedUser = await this.usersRepository.save(user);
+      return updatedUser;
     }
 
     return null;

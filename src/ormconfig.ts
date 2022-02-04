@@ -10,6 +10,9 @@ import {
   POSTGRES_DB,
 } from './common/config';
 import { UserEntity as User } from './users/entities/user.entity';
+import { Board } from './boards/entities/board.entity';
+import { Task } from './tasks/entities/task.entity';
+import { BoardColumn } from './boards/entities/column.entity';
 
 // dotenv.config({
 //   path: path.join(__dirname, './.env'),
@@ -26,7 +29,7 @@ const connectionOptions: ConnectionOptions = {
   logging: false,
   migrationsRun: false,
   // entities: [path.join(__dirname, './entity/*{.ts,.js}')],
-  entities: [User],
+  entities: [User, Board, BoardColumn, Task],
   migrations: ['src/migration/*{.ts,.js}'],
   cli: {
     migrationsDir: 'src/migration',

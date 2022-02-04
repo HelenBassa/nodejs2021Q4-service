@@ -9,6 +9,8 @@ import { Connection } from 'typeorm';
 import configuration from './common/config';
 import connectionOptions from './ormconfig';
 import { AuthModule } from './auth/auth.module';
+import { BoardsModule } from './boards/boards.module';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { AuthModule } from './auth/auth.module';
     }),
     UsersModule,
     AuthModule,
+    BoardsModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
