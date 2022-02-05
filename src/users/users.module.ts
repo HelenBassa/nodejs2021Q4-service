@@ -7,9 +7,13 @@ import { UserEntity as User } from './entities/user.entity';
 import { AuthModule } from '../auth/auth.module';
 import { TasksService } from '../tasks/tasks.service';
 import { TasksModule } from '../tasks/tasks.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: `.env`,
+    }),
     forwardRef(() => AuthModule),
     TypeOrmModule.forFeature([User]),
     TasksModule,

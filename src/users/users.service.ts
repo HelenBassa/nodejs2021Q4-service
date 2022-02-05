@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -9,17 +9,21 @@ import User from './models/users.model';
 import { UserEntity } from './entities/user.entity';
 import { WithoutPassUserEntity } from './entities/without-pass-user.entity';
 
-import { LOGIN, NAME, PASSWORD } from '../common/constants';
-import { AuthService } from '../auth/auth.service';
+import { LOGIN, NAME, PASSWORD, SALT } from '../common/constants';
+import bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject(forwardRef(() => AuthService))
-    private authService: AuthService,
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
   ) {}
+
+  async hashPassword(password: string) {
+    const salt = await bcrypt.genSalt(SALT);
+    const hash = await bcrypt.hash(password, salt);
+    return hash;
+  }
 
   async create(
     createUserDto: CreateUserDto,
@@ -27,8 +31,7 @@ export class UsersService {
     const { name, login, password } = createUserDto;
 
     if (password) {
-      // const hashedPassword = await loginService.hashPassword(password);
-      const hashedPassword = await this.authService.hashPassword(password);
+      const hashedPassword = await this.hashPassword(password);
       const user = new User(name, login, hashedPassword);
       const createdUser = this.usersRepository.create(user);
       await this.usersRepository.save(createdUser);
@@ -58,7 +61,7 @@ export class UsersService {
 
     if (user) {
       const newPassword = `${updateUserDto.password}`;
-      const hashedPassword = await this.authService.hashPassword(newPassword);
+      const hashedPassword = await this.hashPassword(newPassword);
       const newUser = {
         ...updateUserDto,
         password: hashedPassword,
@@ -76,8 +79,8 @@ export class UsersService {
     await this.usersRepository.delete(id);
   }
 
-  async getUserByProps(login: string): Promise<UserEntity | undefined> {
-    const user = await this.usersRepository.findOne({ where: { login } });
+  async getUserByProps(login: string): Promise<UserEntity> {
+    const user = await this.usersRepository.findOne({ login });
     if (user) {
       return user;
     }
@@ -88,10 +91,11 @@ export class UsersService {
     const admin = await this.usersRepository.findOne({
       where: { login: LOGIN },
     });
+    console.log('admin is exist>>>', admin);
     if (!admin) {
-      // const hash = await loginService.hashPassword(PASSWORD);
-      const hash = await this.authService.hashPassword(PASSWORD);
+      const hash = await this.hashPassword(PASSWORD);
       const newUser = new User(NAME, LOGIN, hash);
+      console.log('admin >>>', newUser);
 
       await this.usersRepository.save(newUser);
       return User.toResponse(newUser);

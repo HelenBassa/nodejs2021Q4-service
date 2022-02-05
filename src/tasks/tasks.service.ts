@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BoardNotFoundException } from '../boards/errors/board-not-found.errors';
 import { Repository } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
-import { TaskNotFoundException } from './errors/task-not-found.errors';
 
 @Injectable()
 export class TasksService {
@@ -22,12 +20,16 @@ export class TasksService {
   }
 
   async findAll(boardId: string): Promise<Task[]> {
-    const tasks = await this.tasksRepository.find({ where: { boardId } });
-    return tasks;
+    const tasks = await this.tasksRepository.find({ boardId });
+    if (tasks) {
+      return tasks;
+    }
+    return null;
   }
 
-  async findOne(boardId: string, taskId: string): Promise<Task | undefined> {
+  async findOne(boardId: string, taskId: string): Promise<Task | null> {
     const task = await this.tasksRepository.findOne({ boardId, id: taskId });
+
     if (task) {
       return task;
     }
@@ -51,40 +53,23 @@ export class TasksService {
 
   async remove(boardId: string, taskId: string): Promise<void | undefined> {
     const task = await this.tasksRepository.findOne({ boardId, id: taskId });
+
     if (task) {
       await this.tasksRepository.delete({
         boardId,
         id: taskId,
       });
-
-      // if (deletedTask === undefined) {
-      //   throw new TaskNotFoundException(taskId);
-      // }
     }
     return null;
   }
 
-  async deleteTasksByboardId(boardId: string): Promise<void> {
-    const tasks = await this.tasksRepository.find({ where: { boardId } });
-    if (tasks === undefined) {
-      throw new BoardNotFoundException(boardId);
+  async deleteTasksByboardId({ boardId }): Promise<void> {
+    const task = await this.tasksRepository.find({ boardId });
+    if (task) {
+      await this.tasksRepository.delete({ boardId });
     }
-    const tasksIds: string[] = tasks.map((task: Task) => task.id);
-
-    if (tasksIds && tasksIds.length > 0) {
-      await this.tasksRepository.delete(tasksIds);
-    }
+    return null;
   }
-  // async deleteTasksByboardId(boardId: string): Promise<void> {
-  //   const task = await this.tasksRepository.find({ boardId });
-  //   if (task) {
-  //     const deletedTasks = await this.tasksRepository.delete({ boardId });
-  //     if (!deletedTasks.affected) {
-  //       return null;
-  //     }
-  //   }
-  //   return null;
-  // }
 
   async unassignUser(userId: string): Promise<void> {
     await this.tasksRepository.update(

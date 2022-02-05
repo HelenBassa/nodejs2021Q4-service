@@ -1,4 +1,4 @@
-import { IsArray, IsString } from 'class-validator';
+import { IsArray, IsOptional, IsString } from 'class-validator';
 import { BoardColumn } from '../entities/column.entity';
 
 export class BoardDto {
@@ -9,5 +9,6 @@ export class BoardDto {
   title: string;
 
   @IsArray()
+  @IsOptional()
   columns: BoardColumn[];
 }

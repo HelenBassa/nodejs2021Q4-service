@@ -4,8 +4,6 @@ const PASSWORD = 'admin';
 const SALT = 10;
 
 const AUTH_TYPE = 'Bearer';
-const UNAUTHORIZED = 'Unauthorized user';
-const WRONG_LOGIN_PASS = 'Wrong login/password combination!';
 
 const APP_URL = {
   ROOT: '/',
@@ -24,14 +22,4 @@ const HTTP_CODES = {
   INTERNAL_SERVER_ERROR: 500,
 };
 
-export {
-  NAME,
-  LOGIN,
-  PASSWORD,
-  SALT,
-  AUTH_TYPE,
-  UNAUTHORIZED,
-  WRONG_LOGIN_PASS,
-  APP_URL,
-  HTTP_CODES,
-};
+export { NAME, LOGIN, PASSWORD, SALT, AUTH_TYPE, APP_URL, HTTP_CODES };

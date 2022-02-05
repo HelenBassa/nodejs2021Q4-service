@@ -20,11 +20,14 @@ export class BoardsService {
 
   async findAll(): Promise<Board[]> {
     const boards = await this.boardsRepository.find({ relations: ['columns'] });
-    return boards;
+    if (boards) {
+      return boards;
+    }
+    return null;
   }
 
-  async findOne(id: string): Promise<Board | undefined> {
-    const board = await this.boardsRepository.findOne(id, {
+  async findOne(boardId: string): Promise<Board | null> {
+    const board = await this.boardsRepository.findOne(boardId, {
       relations: ['columns'],
     });
     if (board) {
@@ -34,10 +37,10 @@ export class BoardsService {
   }
 
   async update(
-    id: string,
+    boardId: string,
     updateBoardDto: UpdateBoardDto,
   ): Promise<Board | null> {
-    const board = await this.boardsRepository.findOne(id);
+    const board = await this.boardsRepository.findOne(boardId);
 
     if (board) {
       this.boardsRepository.merge(board, updateBoardDto);
@@ -47,10 +50,10 @@ export class BoardsService {
     return null;
   }
 
-  async remove(id: string): Promise<void | undefined> {
-    const board = await this.boardsRepository.findOne(id);
+  async remove(boardId: string): Promise<void | undefined> {
+    const board = await this.boardsRepository.findOne(boardId);
     if (board) {
-      await this.boardsRepository.delete(id);
+      await this.boardsRepository.delete(boardId);
     }
 
     return null;

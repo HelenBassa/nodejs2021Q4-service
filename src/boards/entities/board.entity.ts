@@ -17,8 +17,8 @@ export class Board {
   })
   columns!: BoardColumn[];
 
-  // @OneToMany('Task', 'board', {
-  //   cascade: true,
-  // })
-  // tasks!: Task[];
+  @OneToMany('Task', 'board', {
+    cascade: true,
+  })
+  tasks!: Task[];
 }

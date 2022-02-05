@@ -1,13 +1,13 @@
-import { CanActivate, ExecutionContext } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { APP_URL, AUTH_TYPE } from '../common/constants';
-import * as jwt from 'jsonwebtoken';
-import { JWT_SECRET_KEY } from '../common/config';
 import { UnauthorizedUserException } from './errors/unauthorized-user.error';
+import { JwtService } from '@nestjs/jwt';
 
+@Injectable()
 export class AuthGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean {
-    const SECRET_KEY = `${JWT_SECRET_KEY}`;
+  constructor(private jwtService: JwtService) {}
 
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     if (
       !(
@@ -20,6 +20,7 @@ export class AuthGuard implements CanActivate {
 
       if (authHeader !== undefined) {
         const tokenStr = request.headers.authorization;
+
         if (tokenStr) {
           const [type, token] = tokenStr.split(' ');
 
@@ -27,12 +28,9 @@ export class AuthGuard implements CanActivate {
             throw new UnauthorizedUserException();
           } else {
             try {
-              const auth = jwt.verify(token, SECRET_KEY);
-              if (auth) {
-                return true;
-              } else {
-                return false;
-              }
+              const user = await this.jwtService.verify(token);
+              request.user = user;
+              return true;
             } catch (e) {
               throw new UnauthorizedUserException();
             }

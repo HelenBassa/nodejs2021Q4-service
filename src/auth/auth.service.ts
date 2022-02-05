@@ -1,45 +1,45 @@
-import * as jwt from 'jsonwebtoken';
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { JWT_SECRET_KEY } from '../common/config';
-import { SALT } from '../common/constants';
+import { WrongLoginPassException } from './errors/wrong-login-pass.error';
+import { UserEntity as User } from '../users/entities/user.entity';
+import { UserLoginDto } from './dto/user-login.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject(forwardRef(() => UsersService))
     private usersService: UsersService,
+    private jwtService: JwtService,
   ) {}
 
-  SECRET_KEY = `${JWT_SECRET_KEY}`;
-
-  async signToken(userLogin: string, password: string): Promise<string | null> {
-    const user = await this.usersService.getUserByProps(userLogin);
-    if (!user) {
-      return null;
+  async login(userLoginDto: UserLoginDto) {
+    const user = await this.validateUser(userLoginDto);
+    if (user) {
+      return this.generateToken(user);
     }
-    const { password: hashedPassword } = user;
-    if (hashedPassword) {
-      const isSimilar = await this.checkPassword(password, hashedPassword);
-      if (isSimilar) {
-        const { id, login } = user;
-        const token = jwt.sign({ id, login }, this.SECRET_KEY);
-        return token;
-      }
+
+    throw new WrongLoginPassException();
+  }
+
+  async validateUser(userLoginDto: UserLoginDto) {
+    const user = await this.usersService.getUserByProps(userLoginDto.login);
+    const isSimilar = await bcrypt.compare(
+      userLoginDto.password,
+      user.password,
+    );
+    if (user && isSimilar) {
+      return user;
     }
     return null;
   }
 
-  async hashPassword(password: string) {
-    const salt = await bcrypt.genSalt(SALT);
-    const hash = await bcrypt.hash(password, salt);
-    return hash;
-  }
+  generateToken(user: User) {
+    const payload = { id: user.id, login: user.login };
+    const token = this.jwtService.sign(payload);
 
-  async checkPassword(password: string, hash: string) {
-    const isSimilar = await bcrypt.compare(password, hash);
-    return isSimilar;
+    return { token };
   }
 }

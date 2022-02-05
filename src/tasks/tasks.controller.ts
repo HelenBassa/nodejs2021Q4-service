@@ -6,6 +6,7 @@ import {
   Param,
   Delete,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -13,13 +14,16 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { validate } from 'uuid';
 import { IsntUUIDException } from '../users/errors/isnt-uuid.error';
 import { TaskNotFoundException } from './errors/task-not-found.errors';
+import { AuthGuard } from '../auth/auth.guard';
+import { TaskNoContentException } from './errors/task-no-content.errors';
+import { Task } from './entities/task.entity';
 
-@Controller('boards')
-// @UseGuards(AuthGuard)
+@Controller('/boards/:boardId/tasks')
+@UseGuards(AuthGuard)
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
-  @Post(':boardId/tasks')
+  @Post()
   create(
     @Param('boardId') boardId: string,
     @Body() createTaskDto: CreateTaskDto,
@@ -30,16 +34,25 @@ export class TasksController {
     return this.tasksService.create(boardId, createTaskDto);
   }
 
-  @Get(':boardId/tasks')
+  @Get()
   findAll(@Param('boardId') boardId: string) {
     if (!validate(boardId)) {
       throw new IsntUUIDException(boardId);
     }
-    return this.tasksService.findAll(boardId);
+    const tasks = this.tasksService.findAll(boardId);
+
+    if (tasks) {
+      return tasks;
+    }
+
+    throw new TaskNotFoundException(boardId);
   }
 
-  @Get(':boardId/tasks/:taskId')
-  findOne(@Param('boardId') boardId: string, @Param('taskId') taskId: string) {
+  @Get(':taskId')
+  async findOne(
+    @Param('boardId') boardId: string,
+    @Param('taskId') taskId: string,
+  ) {
     if (!validate(boardId)) {
       throw new IsntUUIDException(boardId);
     }
@@ -47,8 +60,7 @@ export class TasksController {
       throw new IsntUUIDException(taskId);
     }
 
-    const task = this.tasksService.findOne(boardId, taskId);
-
+    const task = await this.tasksService.findOne(boardId, taskId);
     if (task) {
       return task;
     }
@@ -56,7 +68,7 @@ export class TasksController {
     throw new TaskNotFoundException(taskId);
   }
 
-  @Put(':boardId/tasks/:taskId')
+  @Put(':taskId')
   update(
     @Param('boardId') boardId: string,
     @Param('taskId') taskId: string,
@@ -81,24 +93,17 @@ export class TasksController {
     throw new TaskNotFoundException(taskId);
   }
 
-  @Delete(':boardId/tasks/:taskId')
+  @Delete(':taskId')
   async remove(
     @Param('boardId') boardId: string,
     @Param('taskId') taskId: string,
   ) {
-    if (!validate(boardId)) {
-      throw new IsntUUIDException(boardId);
+    const task = await this.findOne(boardId, taskId);
+
+    if (task) {
+      return await this.tasksService.remove(boardId, taskId);
     }
-    if (!validate(taskId)) {
-      throw new IsntUUIDException(taskId);
-    }
 
-    await this.tasksService.remove(boardId, taskId);
-
-    // const deletedTask = await this.tasksService.remove(boardId, taskId);
-
-    // if (deletedTask === undefined) {
-    //   throw new TaskNotFoundException(taskId);
-    // }
+    throw new TaskNoContentException(taskId);
   }
 }

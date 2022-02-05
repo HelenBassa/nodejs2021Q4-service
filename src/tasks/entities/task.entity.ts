@@ -30,7 +30,7 @@ export class Task {
   @Column('uuid', {
     nullable: true,
   })
-  boardId!: string;
+  boardId!: string | null;
 
   // @ManyToOne('User', 'tasks', {
   //   eager: true,
@@ -40,10 +40,10 @@ export class Task {
   // })
   // user!: User;
 
-  // @ManyToOne('Board', 'tasks', {
-  //   eager: true,
-  //   onDelete: 'CASCADE',
-  //   onUpdate: 'CASCADE',
-  // })
-  // board!: Board;
+  @ManyToOne('Board', 'tasks', {
+    eager: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  board!: Board;
 }

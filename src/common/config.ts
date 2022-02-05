@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 // import dotenv from 'dotenv/config';
 // import path from 'path';
-// console.log(__dirname);
 // dotenv.config({
 //   path: path.join(__dirname, '../../env'),
 // });
