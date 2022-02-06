@@ -13,6 +13,7 @@ export class AuthGuard implements CanActivate {
       !(
         request.url === APP_URL.ROOT ||
         request.url === APP_URL.DOC ||
+        request.url === APP_URL.FILE ||
         request.url === APP_URL.LOGIN
       )
     ) {

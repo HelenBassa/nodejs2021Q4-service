@@ -1,3 +1,5 @@
+import { join } from 'path';
+
 const NAME = 'admin';
 const LOGIN = 'admin';
 const PASSWORD = 'admin';
@@ -9,7 +11,10 @@ const APP_URL = {
   ROOT: '/',
   DOC: '/doc',
   LOGIN: '/login',
+  FILE: '/file',
 };
+
+const UPLOAD_DIR = join(__dirname, '../../uploads');
 
 const HTTP_CODES = {
   OK: 200,
@@ -22,4 +27,13 @@ const HTTP_CODES = {
   INTERNAL_SERVER_ERROR: 500,
 };
 
-export { NAME, LOGIN, PASSWORD, SALT, AUTH_TYPE, APP_URL, HTTP_CODES };
+export {
+  NAME,
+  LOGIN,
+  PASSWORD,
+  SALT,
+  AUTH_TYPE,
+  APP_URL,
+  HTTP_CODES,
+  UPLOAD_DIR,
+};
