@@ -4,7 +4,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Connection } from 'typeorm';
 
 import configuration from './common/config';
 import connectionOptions from './ormconfig';
@@ -29,6 +28,4 @@ import { FilesModule } from './files/files.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
-  // constructor(private connection: Connection) {}
-}
+export class AppModule {}

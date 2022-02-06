@@ -7,7 +7,6 @@ import {
   Delete,
   UseGuards,
   Put,
-  HttpCode,
 } from '@nestjs/common';
 import { validate } from 'uuid';
 import { UsersService } from './users.service';

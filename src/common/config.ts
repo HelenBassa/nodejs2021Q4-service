@@ -1,10 +1,3 @@
-import dotenv from 'dotenv';
-// import dotenv from 'dotenv/config';
-// import path from 'path';
-// dotenv.config({
-//   path: path.join(__dirname, '../../env'),
-// });
-
 export const PORT = process.env.PORT || 3000;
 export const HOST = '0.0.0.0';
 export const { NODE_ENV } = process.env;

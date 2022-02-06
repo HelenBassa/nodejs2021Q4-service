@@ -16,7 +16,6 @@ import { IsntUUIDException } from '../users/errors/isnt-uuid.error';
 import { TaskNotFoundException } from './errors/task-not-found.errors';
 import { AuthGuard } from '../auth/auth.guard';
 import { TaskNoContentException } from './errors/task-no-content.errors';
-import { Task } from './entities/task.entity';
 
 @Controller('/boards/:boardId/tasks')
 @UseGuards(AuthGuard)
