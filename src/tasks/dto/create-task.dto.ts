@@ -1,29 +1,4 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { OmitType } from '@nestjs/mapped-types';
+import { TaskDto } from './task.dto';
 
-export class CreateTaskDto {
-  // @IsString()
-  id: string;
-
-  // @IsString()
-  // @IsOptional()
-  title: string;
-
-  // @IsNumber()
-  order: number;
-
-  // @IsString()
-  // @IsOptional()
-  description: string;
-
-  // @IsString()
-  // @IsOptional()
-  userId: string | null;
-
-  // @IsString()
-  // @IsOptional()
-  boardId: string | null;
-
-  // @IsString()
-  // @IsOptional()
-  columnId: string | null;
-}
+export class CreateTaskDto extends OmitType(TaskDto, ['id'] as const) {}
