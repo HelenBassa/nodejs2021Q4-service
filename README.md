@@ -55,6 +55,28 @@ docker-compose up
 docker container exec docker-basics-app npm run test:auth
 ```
 
+## Uploading and downloading files:
+
+### To upload a file using **Postman**:
+
+- Make a POST request to
+
+```bash
+http://localhost:3000/file
+```
+
+specifying the type **Body** **`form-data`** and the **KEY** **`file`**, **VALUE** - **`Select Files`**.
+
+### To upload a file using **Postman**:
+
+- For download file after upload open in **browser**
+
+```bash
+http://localhost:3000/file/filename.extension
+```
+
+For example: **_`http://localhost:3000/file/image.jpg`_**
+
 ## How to install and start the REST service on **local machine**
 
 ## Prerequisites
