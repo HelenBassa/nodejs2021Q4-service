@@ -91,15 +91,16 @@ export class UsersService {
     const admin = await this.usersRepository.findOne({
       where: { login: LOGIN },
     });
-    console.log('admin is exist>>>', admin);
+
     if (!admin) {
       const hash = await this.hashPassword(PASSWORD);
       const newUser = new User(NAME, LOGIN, hash);
-      console.log('admin >>>', newUser);
+      console.log('Add admin user to DB >>>', newUser);
 
       await this.usersRepository.save(newUser);
       return User.toResponse(newUser);
     }
+    console.log('Admin is exist >>>', admin);
     return null;
   }
 }
