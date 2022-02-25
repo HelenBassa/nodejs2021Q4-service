@@ -3,5 +3,7 @@ WORKDIR /app
 COPY package*.json .
 RUN npm install --no-optional && npm cache clean --force
 COPY . .
+RUN npm run prebuild
+RUN npm run build
 EXPOSE ${PORT}
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start:dev"]

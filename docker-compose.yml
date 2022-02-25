@@ -16,9 +16,11 @@ services:
       - db
     volumes:
       - logs:/app/logs
+      - ./uploads:/app/uploads
       - ./src:/app/src
     environment:
       - PORT=${PORT}
+      - STATIC_FILES_DIR=${STATIC_FILES_DIR}
   db:
     container_name: docker-basics-db
     build: ./postgres_db/
